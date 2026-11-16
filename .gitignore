@@ -10,3 +10,4 @@
 __pycache__/
 # 一次性草稿与临时目录
 40-new/_acl/
+.obsidian/

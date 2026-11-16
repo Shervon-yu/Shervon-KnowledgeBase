@@ -22,6 +22,12 @@
 ```
 
 `20-md` 入库夹少于 20 个时全部扁平；到 20 个才允许分组，超过 40 个必须分组（见 `rules.md` 第 4 节）。
+## 设计文档与 Obsidian
+
+- **设计与实施方案**（P0–P4 施工图、脚本原文、验收判据、成本与规模阈值）：`LLM-Wiki-设计与实施.md`，2018 行，2026-11-16 由两份调研文档合并。
+- **写 wiki 的编辑契约**：`90-tool\AGENTS.wiki.md`（三层写者边界、frontmatter 顺序、页面硬约束）。
+- **解析层规则**：`90-tool\rules.md`（v3.0，含 §12–§15）。
+- **Obsidian**：本夹直接作 vault 打开。`.obsidian\app.json` 已把 `10-source\`、`20-md\`、`30-index\`、`40-new\`、`90-tool\`、`00-inbox\` 列为排除，星图只显示 `50-wiki` 与根目录文档；改后需重启 Obsidian 才生效。`.obsidian\` 不进版本库（`.gitignore`）。
 
 ## 往库里加资料
 
