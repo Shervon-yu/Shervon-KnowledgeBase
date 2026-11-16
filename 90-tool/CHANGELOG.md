@@ -1,4 +1,12 @@
-﻿## v2.3 — 2026-11-12
+## v3.0 — 2026-11-16
+
+- 新增 **50-wiki 层**（LLM Wiki）：`concepts` / `entities` / `sources` / `comparisons` / `howto` / `openq` 六个子目录 + `index.md` / `log.md` / `glossary.md`。raw（10-source + 20-md）→ wiki（50-wiki）→ schema（AGENTS.wiki.md + rules.md）三层，LLM 只写 50-wiki。
+- 新增 `90-tool\AGENTS.wiki.md`：wiki 层编辑契约（写者边界、唯一译名、断言必须有来源、页面硬约束、冲突与换代、ingest/query/lint SOP、禁止项）。
+- `rules.md` 追加 §12（50-wiki 层）/ §13（页面契约与 frontmatter）/ §14（书名+节号+行号引用格式）/ §15（ingest / query / lint SOP 与提交信息格式）。
+- 版本库接入：`git init` + 本地 P0a 基线快照；`.gitignore` 排除 `10-source\`、`.stfolder\`、`30-index\catalog.md`、`30-index\todo.md`、`50-wiki\_lint.md`、`__pycache__\`、`40-new\_acl\`。
+- 解析层（10-source / 20-md / 30-index）规则不变，v3.0 只加不改。
+
+## v2.3 — 2026-11-12
 
 - 图名规则补全：禁用字符加 [ ] { } # %，命名前剥图题引用号 [31]（igures.py 已改）；含空格的 md 链接建议写 %20。
 - 夹名以版权页校准：解析完用 CIP 核对书名/版次/年份，不符改名（夹、md、10-source、src），再重跑 catalog；README 同步改写为 v2.3 现状。

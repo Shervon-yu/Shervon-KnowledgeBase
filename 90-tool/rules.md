@@ -170,3 +170,73 @@ python -X utf8 "D:\Shervon_KnowledgeBase\90-tool\scripts\figures.py" `
 - `--dedupe` 只删**同字节副本**，且把引用重指向保留件；删前已核对唯一性。
 - 同一本书重复跑是安全的（幂等）。
 - 跑完必须重新检查：`broken` 应为 0。用 `check-links.ps1 -Md <md>`（默认 dry-run，`-Fix` 才修），输出 `unresolved=0` 才算过。
+
+## 12. 50-wiki 层（LLM Wiki）
+
+三层结构：raw（`10-source` + `20-md`）→ wiki（`50-wiki`）→ schema（`90-tool\AGENTS.wiki.md` + 本文件）。
+
+- `50-wiki` 固定六个子目录：`concepts` / `entities` / `sources` / `comparisons` / `howto` / `openq`，外加 `index.md`（索引）、`log.md`（变更日志）、`glossary.md`（唯一译名表）。
+- 写者边界：**只有 LLM 写 `50-wiki`**；人在 Obsidian 中只读，改动靠 git 审计；脚本不写 `50-wiki`。
+- 一次提交只含一本书的 ingest，不混两本。
+- 页面级编辑契约全文见 `90-tool\AGENTS.wiki.md`；与本文件冲突时以更严的一条为准。
+- 新增子目录前必须先改 `AGENTS.wiki.md` 第 0 节，不得擅自开新层级。
+
+## 13. 页面契约（frontmatter 与硬约束）
+
+字段顺序固定，不得增删或调序：
+
+```
+---
+type: concept
+title: 端面比压
+aliases: [端面比载荷]
+domain: 机械密封
+status: draft
+confidence: high
+sources:
+  - book: 机械密封结构图例及应用
+    section: §1.2
+    lines: "#L120-#L148"
+related: ["[[泄漏与密封判据]]"]
+supersedes: []
+updated: 2026-11-16
+---
+```
+
+- `type` 六选一：`concept` / `entity` / `source` / `comparison` / `howto` / `openq`，必须与所在目录一致。
+- `status` 四选一：`draft` / `stable` / `superseded` / `open`。
+- `confidence` 三选一：`high` / `medium` / `low`；`low` 需在正文首段说明为何低。
+- 单页 ≤150 行；超了拆页，原页留「→ 已拆至 [[新页]]」。
+- 每页入链 ≥2，否则合并或删除。
+- 图引用必须附 ≥1 句文字转述；转述不出则走视觉模型并在 `log.md` 记一条。
+- 文件名 = `title` = 正名；禁用字符 `\ / : * ? " < > |`。
+
+## 14. 引用格式（书名 + 节号 + 行号双轨）
+
+正文引用一律写成：`《书名》§节号（#L行号）`，例：
+
+```
+《机械密封结构图例及应用》§1.2（#L120-#L148）
+```
+
+- 节号用书中真实章节号，不自行编号、不猜。
+- 行号指 `20-md\<入库夹>\<入库夹>.md` 的绝对行号。
+- 行号随重解析漂移：重解析后由 `md-anchor.ps1` 重算锚点，并在 `log.md` 记一条 `reanchor`。
+- 只写书名不写节号 = 无来源，按 `AGENTS.wiki.md` §2 处理（进 `openq`）。
+- 同一断言跨书时逐条列全，不合并成一条。
+
+## 15. SOP（ingest / query / lint）
+
+**ingest 八步**：0 查重（`glossary.md` + `concepts\`）→ 1 章节地图（`(n)` 假标题降级为粗体）→ 2 写 `sources\` 页 → 3 建/改概念页 → 4 转述图 → 5 回改受影响页（冲突开 `openq`）→ 6 更新 `index.md` → 7 追加 `log.md`（记 token 与成本）→ 8 `wiki-lint.ps1` + `git commit`。
+
+**query 四步**：grep `index.md` 与 `50-wiki` → 读 ≤10 候选页 → 回答带 §节号与 `#L` 行号 → 判断回填（crystallize）并登记 `index.md`。
+
+**lint 八项**：死链 / 孤儿页 / 无来源 / 超长页 / 同义重复 / 过期断言 / index 漂移 / 图无转述。命令：
+
+```
+powershell -NoProfile -ExecutionPolicy Bypass -File "D:\Shervon_KnowledgeBase\90-tool\scripts\wiki-lint.ps1"
+```
+
+报告写 `50-wiki\_lint.md`（生成物，不进版本库）。
+
+**提交信息格式**：`wiki(ingest): <书名> touch=N`；`crystallize` 与 `lint` 分别用 `wiki(crystallize):` / `wiki(lint):` 前缀。

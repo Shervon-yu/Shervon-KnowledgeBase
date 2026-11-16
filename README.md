@@ -11,7 +11,8 @@
 | `20-md\` | 解析出的正文 `.md` + 每本书的 `图片\` | 脚本生成 |
 | `30-index\` | `manifest.csv` / `catalog.md` / `todo.md` | `catalog.ps1` 重建 |
 | `40-new\` | 报告、日志、脚本、临时目录 | 只往这里放新建物 |
-| `90-tool\` | 规则（`rules.md`）、提示词、脚本 | 改规则时 |
+| `50-wiki\` | LLM Wiki：概念/实体/书页/对比/做法/未决，加 `index.md`、`log.md`、`glossary.md` | 只有 LLM 写；人在 Obsidian 只读 |
+| `90-tool\` | 规则（`rules.md`、`AGENTS.wiki.md`）、提示词、脚本 | 改规则时 |
 
 一本书的正文与图：
 
