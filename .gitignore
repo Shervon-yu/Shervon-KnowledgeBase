@@ -1,0 +1,12 @@
+# 原件：版权材料，外部可重取，永不版本化
+10-source/
+# Syncthing 标记
+.stfolder/
+# 机器生成物：可重算，不入库
+30-index/catalog.md
+30-index/todo.md
+50-wiki/_lint.md
+# Python 缓存
+__pycache__/
+# 一次性草稿与临时目录
+40-new/_acl/
