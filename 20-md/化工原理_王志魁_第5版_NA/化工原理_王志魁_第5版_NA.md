@@ -1,3 +1,20 @@
+---
+id: "4ca31c2ed59b"
+title: "化工原理"
+authors: "王志魁"
+edition: "第5版"
+year: "NA"
+kind: "book"
+topic: "NA"
+pages: ""
+ocr: "unknown"
+quality: "ok"
+sha256: "4ca31c2ed59b048dc910978aba9932ccd09f3018c98992a8a9218f73523db19d"
+src: "10-source/化工原理_王志魁_第5版_NA"
+files: "1"
+added: "2026-11-10"
+missing: "year"
+---
 <!-- page: 1 -->
 
 ![](图片/图_第1页_1.jpg)
