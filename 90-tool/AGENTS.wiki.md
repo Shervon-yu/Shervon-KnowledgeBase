@@ -91,17 +91,23 @@ updated: 2026-11-16
 - 矛盾属于口径/参数/适用条件差异时，改开 `comparisons\` 页，四选勾写清差异性质。
 - 换代链最长三级；超过三级说明概念本身需要重写，开 `openq\` 讨论。
 
-## 5. Ingest 八步（执行标准见改造方案 §3.5）
+## 5. Ingest 六步（一次到位，v3.2）
 
 0. 查重：查 `glossary.md` + `concepts\`，命中则改为改旧页。
-1. 章节地图：列出本书真标题与行号；`(n)` 假标题先降级为粗体。
-2. 写 `sources\` 页：元信息表 → 章节地图 → 能回答什么/不能回答什么 → 图清单。
-3. 建/改概念页：每页带 `sources` 三元组，断言逐条挂出处。
-4. 转述图：每张被引用的图至少一句文字转述。
-5. 回改受影响页：被新页推翻的旧断言改 `superseded`；矛盾开 `openq\`。
-6. 更新 `index.md`：只补摘要列，不改结构。
-7. 追加 `log.md`：记 token 与成本，`touch` 记本次改动的页数。
-8. lint 自检 + `git commit`：提交信息带 `touch=N`。
+1. 解析：`ingest.ps1` 跑 MinerU，产物落 `40-new\parse\<入库夹名>\`（`middle_json` 是唯一可信来源）。
+2. 生成 + 验收：一条命令
+   ```
+   powershell -NoProfile -ExecutionPolicy Bypass -File "90-tool\scripts\ingest-build.ps1" -Book "<入库夹名>"
+   ```
+   内部 `md-build write → fig-names apply → md-build prune → check-links → 验收表`。**必须看到「验收通过」**，不许手改行号糊过去。
+3. 写 `sources\` 页：元信息表 → 章节地图（带 `#L`）→ 能回答什么/不能回答什么 → 图清单。
+4. 建/改概念页：每页带 `sources` 三元组，断言逐条挂出处；每张被引用的图至少一句文字转述。
+5. 回改受影响页 + `index.md` + `log.md`（记 token、成本、`touch=N`）。
+6. `wiki-lint.ps1` 必过 0 条 + `git commit`。
+
+**验收门（缺一不算完）**：锚点数 = PDF 页数；`$$` 公式数 > 0；图链数 = 图片文件数；未定名图 `图_第NN页_` = 0；frontmatter 存在；`check-links` unresolved = 0。
+
+**重解析代价**：重建会换掉全部行号，必须 `git checkout -- '50-wiki' kb-blueprint.md` → `refs-remap.py dry → apply` 重算 `#L`；同一批文件重复 apply 会二次映射，重试前必须先 checkout。
 
 - 一次 `ingest` 只处理一本书；跨书内容放 `comparisons\`，不塞进单本书页。
 

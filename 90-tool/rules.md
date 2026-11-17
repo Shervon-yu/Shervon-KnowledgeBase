@@ -242,3 +242,28 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "D:\Shervon_KnowledgeBase\90
 报告写 `50-wiki\_lint.md`（生成物，不进版本库）。
 
 **提交信息格式**：`wiki(ingest): <书名> touch=N`；`crystallize` 与 `lint` 分别用 `wiki(crystallize):` / `wiki(lint):` 前缀。
+
+## 16. 解析产物 → 20-md：生成规范（v3.2）
+
+一条命令（MinerU 解析产物已在 `40-new\parse\<入库夹名>\` 或 `%TEMP%\mk-full\<入库夹名>\`）：
+
+```
+powershell -NoProfile -ExecutionPolicy Bypass -File "90-tool\scripts\ingest-build.ps1" -Book "<入库夹名>"
+```
+
+内部五步：`md-build.py write`（按页序重建）→ `fig-names.py apply`（无图题图定名）→ `md-build.py prune`（未引用图归档）→ `check-links.ps1`（图链自检）→ 验收表。
+
+**六条硬性产出**（缺一条都不算入库完成）：
+
+1. 逐页 `<!-- page: N -->`，N 用书页印刷页码（来自 `page_number` 块；缺失才退到 page_idx+1）。锚点数必须等于 PDF 页数。
+2. `type=equation` 的 block → 独立公式 `$$ ... $$`；`equation_inline` → 行内 `$...$`。丢公式是最常见的静默错误。
+3. `table_body` 的 HTML → pipe 表格（colspan 补空列、rowspan 后续行留空），表题/表注各占一行。
+4. 图名四级：①有图号图题 → `图X-Y 说明.jpg`；②同页紧跟的无号文字 → 该文字作图名；③方形小图（长边 ≤200 且宽高差 ≤15%）→ `二维码-第NN页.jpg`；④都没有 → `图_第NN页_n.jpg` 并进 `openq\` 登记，**不得编造图号**。
+5. write 时必须保留原 md 的 YAML frontmatter（`catalog.ps1` 靠它认书目）。
+6. 目录页的 `paragraph_title` 一律输出为 `- 文本` 列表，禁止生成 `## 第三章 ...` 假章标题。
+
+**守卫与代价**：
+
+- md 已是生成版（锚点 ≥10 且无 `图_第NN页_`）时，`ingest-build.ps1` 默认跳过重建，避免把人工定好的图名打回页码名；确需重建加 `-Force`。
+- 重建会换掉全部行号。步骤固定：`git checkout -- '50-wiki' kb-blueprint.md` → `refs-remap.py dry`（报告落 `%TEMP%`）→ 人工核 LCS<14 的条目 → `refs-remap.py apply`。**同一批文件重复 apply 会把新行号再当旧行号映射一次**，每次重试前必须先 `git checkout`。
+- `md-build.py prune` 把 md 未引用的图片移到 `40-new\_acl\orphan-images\<入库夹名>\`（可回滚，不删）。

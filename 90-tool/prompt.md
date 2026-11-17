@@ -43,6 +43,19 @@ cmd /c dir D:\Shervon_KnowledgeBase\90-tool
    - `.docx/.pptx/.xlsx`：解压后读 XML 抽文字（不需要 Office）。
 4. 按 `rules.md` 第 5 节处理图示：正文保留 `图X.X 说明`，**所有插图放进入库夹的 `图片\` 子目录**，文件名归一成 `图1.1 问题描述.jpg`（图号 `3-1` 也写成 `3.1`），md 内链接写 `![](图片/图1.1 问题描述.jpg)`。正文、其他文档放入库夹根。**文件名禁含 `( ) [ ] { } * ? : " < > | / \ # %`**：多子图写 `图7.3 …_a.jpg`、`_b`，不要写 `(a)`；图题里的引用号 `[31]` 先剥掉——方括号/圆括号都会截断 markdown 链接，是硬错误。
 5. 按 `rules.md` 第 3 节写 md：frontmatter 十五个字段齐全，缺的写 `""` 并在 `missing` 里列出字段名，同时把缺项记进待补清单。
+## 生成与验收（v3.2 起，优先于手改）
+
+解析产物在 `40-new\parse\<入库夹名>\` 后，**不要再手工拼 md**，一条命令出成品：
+
+```
+powershell -NoProfile -ExecutionPolicy Bypass -File "90-tool\scripts\ingest-build.ps1" -Book "<入库夹名>"
+```
+
+- 五步：`md-build write`（页码锚点 / `$$` 公式 / pipe 表 / 图链 + 图题 / 保留 frontmatter）→ `fig-names apply` → `md-build prune` → `check-links` → 验收表。
+- 验收表 7 行必须全过：锚点 = PDF 页数、公式 > 0、表格 > 0、图链 = 图片文件数、frontmatter True、未定名图 0、`check-links` unresolved 0。
+- 不通过时报出哪一项、为什么，**不许改验收阈值或手改行号绕过**。
+- md 已是生成版时默认跳过重建（保人工图名）；确需重建加 `-Force`，并按 `rules.md` §16 重算全部 `#L`。
+
 6. 解析完用版权页核对书名/版次/年份（不符就改名：入库夹、md、`10-source`、frontmatter 的 `src` 同步，再重跑 `catalog.ps1`）。
 7. 按 `rules.md` 第 4 节定层级、第 6 节定名：
    - 先数 `20-md` 下现有入库夹总数 N。

@@ -1,3 +1,9 @@
+## v3.2 — 2026-11-17
+
+- 新增四个脚本（`90-tool\scripts\`）：`md-build.py`（middle_json → 20-md：页码锚点 / `$$` 公式 / pipe 表 / 图链图题 / 保留 frontmatter / 目录页转列表 / 未引用图归档）、`fig-names.py`（挂同页图题 + 二维码判定）、`refs-remap.py`（重建后 `#L` 重算，apply 前强制工作区干净）、`ingest-build.ps1`（一条命令五步 + 七行验收，不达标 exit 2）。
+- `rules.md` 新增 §16（生成规范六条 + 守卫 + 重解析顺序）；`AGENTS.wiki.md` §5 由「Ingest 八步」改为「Ingest 六步（一次到位）」；`prompt.md` 第 6 步前插入「生成与验收（v3.2 起，优先于手改）」；`kb-blueprint.md` §3.5 与 §2.7 注明 ②–⑤ 已收拢成一条命令。
+- 三条教训：①`.ps1` 必须 UTF-8 BOM，否则 PowerShell 5.1 按 ANSI 读中文报语法错；②图片名含空格时计数正则要用 `图片/([^)]+?\.jpg)`，`[^)]+` 会截断；③重建 md 会打回人工图名，故 `ingest-build.ps1` 对已生成版默认跳过重建，需 `-Force`。
+
 ## v3.1 — 2026-11-17
 
 - §5 md 链接规则纠正：写真实文件名、含空格照写、不加 %20（check-links.ps1 按原文判 bad，含 % 一律不过）。
