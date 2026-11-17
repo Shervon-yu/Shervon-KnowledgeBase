@@ -8,7 +8,7 @@ confidence: high
 sources:
   - book: kb-blueprint
     section: §3.12 Obsidian 星图方案
-    lines: "#L740-#L800"
+    lines: "#L887-#L769"
 related: ["[[新增一本书的入库清单]]", "[[盘点知识库完成度]]"]
 supersedes: []
 updated: 2026-11-17
