@@ -1,3 +1,7 @@
+## v3.1 — 2026-11-17
+
+- §5 md 链接规则纠正：写真实文件名、含空格照写、不加 %20（check-links.ps1 按原文判 bad，含 % 一律不过）。
+
 ## v3.0 — 2026-11-16
 
 - 新增 **50-wiki 层**（LLM Wiki）：`concepts` / `entities` / `sources` / `comparisons` / `howto` / `openq` 六个子目录 + `index.md` / `log.md` / `glossary.md`。raw（10-source + 20-md）→ wiki（50-wiki）→ schema（AGENTS.wiki.md + rules.md）三层，LLM 只写 50-wiki。

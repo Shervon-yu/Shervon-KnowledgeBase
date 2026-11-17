@@ -520,6 +520,86 @@ D:\Shervon_KnowledgeBase\
 | 7 | index 漂移 | index 页数与磁盘页数不符 | 重生成 index |
 | 8 | 图引用无转述 | 引用图但无文字转述且无 vision 记录 | 补转述或喂图 |
 
+### 一张图看懂：从「新书 PDF」到「下次提问带页码」（v3 补）
+
+> 泳道：**你**＝人，1 次操作 → **机**＝脚本，¥0 → **我**＝LLM 编译，≈¥0.51/本 → **问**＝下次提问，≈¥0.01/次（§3.9.2、§3.9.3）。每步末尾「出处」指向本文档小节，执行细节以出处原文为准。
+
+```text
+① 你   prompt＋新教材 PDF
+    │   放进 00-inbox\ 一个文件夹（一本书＝一个入库夹，命名 书名_作者_版次_年份）
+    │   工具：拖放即可                出处：rules §2 输入、§1 总则；§3.1 目标结构
+    ▼
+② 我   跑 90-tool\scripts\ingest.ps1 → 调 MinerU（mineru-kit：版面分析＋OCR）
+    │   产出 20-md\<入库夹>\：全文 md（多册合并）＋图片\ 裁剪图＋MinerU 中间产物
+    │   （middle.json 每块带 page_idx）；原件同步移入 10-source，inbox 清空
+    │   出处：rules §3 输出、§2 输入；§9.7；§9.8
+    ▼
+③ 机   30-index 自动重建（catalog.ps1 → catalog.md / manifest.csv / todo.md）
+    │   图名归一 figures.py（caption 化、剥引用号）；质检（rules §7，ingest 内）
+    │   出处：rules §7 质检、§11 图名归一；§3.1
+    ▼
+④ 机   一次性修补（每本各跑一次）：假标题降级 ## (n)→**(n)**；%20 死链解码
+    │   （check-links.ps1 干跑 0 才过）   出处：P1-1；§9.7；P2-1
+    ▼
+⑤ 机   md-anchor.ps1 读本次解析的 middle.json → 在 20-md 插 <!-- page: N --> 页码锚点
+    │   匹配失败率 >5% 即停；旧书已清理 middle.json 的需先重跑 MinerU 中间产物
+    │   出处：§9.8；§3.7；P2-2
+    ▼
+⑥ 机   git add 20-md → commit（机器层闭环；后面 LLM 写坏可 reset 回滚）
+    │   出处：§3.11；§9.9
+    ▼
+⑦ 我   Ingest 步0-2：查重（glossary＋concepts＋index）→ 提取标题树 →
+    │   写 sources\<书>.md（章节地图＋这本书能答/不能答什么）
+    │   出处：§3.5 Ingest 表；AGENTS.wiki.md §1、§2
+    ▼
+⑧ 我   Ingest 步3-4：建/改 concepts、entities 页（定义/机理/口径/参数/边界/来源）
+    │   引用图必有文字转述；转述不出 → 按需喂 deepseek-flash（Vision），钱记 log
+    │   出处：§3.5 步4；§3.9.2；AGENTS.wiki.md §3
+    ▼
+⑨ 我   Ingest 步5：回改受影响旧页。两书口径矛盾 → 开 openq（不擅自二选一）；
+    │   新断言推翻旧断言 → 旧页标 superseded，supersedes 指向新页，不删
+    │   出处：AGENTS.wiki.md §4；§3.5 步5
+    ▼
+⑩ 机   wiki-index.ps1 重生成 index.md；log.md 追加一条 ingest
+    │   （touch=N、in/out token、¥）      出处：§3.5 步6、步7
+    ▼
+⑪ 机   wiki-lint.ps1 八项体检 → 50-wiki\_lint.md；git commit "ingest: 《书》 touch=N"
+    │   出处：§3.5 Lint 表；§3.11
+    ▼
+⑫ 问   下次提问走 Query 四步：grep index.md 定位主题 → 读 ≤10 候选页 →
+    │   不够查 glossary 同义词 → 再不够才 grep 20-md 原文（最后手段）
+    │   出处：§3.5 Query 表；§9.10；§6.4
+    ▼
+⑬ 问   我回答：每条断言挂《书名》§节号＋#L行号；有锚点的书再附「第 N 页」。
+    │   反复被问的点 → crystallize 成 howto/comparison 页并登记 index（回填）
+    │   出处：§3.3 §14 引用约定；§3.5 Query 步4
+    ▼
+⑭ 你   Obsidian 星图只读浏览（星图＝50-wiki 的 [[]] 网）。规模升级触发器：
+    │   ＞20 本 → LightRAG 实体图；＞30 本 → tobi/qmd 混合检索；图膨胀 → Git LFS
+    │   出处：§3.12；§6.5；P4
+```
+
+**工具清单（按出现顺序）**：
+
+| 工具 | 图中步 | 干什么 | 出处 |
+|:---|:--:|:---|:---|
+| MinerU（mineru-kit CLI） | ② | PDF → md／裁剪图／middle.json（含 page_idx） | §9.7、§9.8 |
+| `ingest.ps1` | ② | 编排解析、搬原件、质检 | rules §3、§7 |
+| `figures.py` / `catalog.ps1` | ③ | 图名归一 / 重建 30-index | rules §11、§3 |
+| `check-links.ps1` | ④ | 死链体检 | §9.7、P2-1 |
+| `md-anchor.ps1` | ⑤ | 页码锚点 `<!-- page: N -->` | §3.7、§9.8 |
+| deepseek-flash（Vision） | ⑧ | 按需喂图拿文字转述 | §3.9.1 |
+| `wiki-index.ps1` / `wiki-lint.ps1` | ⑩⑪ | 生成 index / 八项体检出 `_lint.md` | §3.7 |
+| git＋GitHub 私有仓库 | ⑥⑪ | 版本历史、回滚、异地备份 | §3.11、§9.9 |
+| Obsidian | ⑭ | 星图只读视窗（人机同步） | §3.12 |
+| 我（DSH 会话） | ⑦⑧⑨⑫⑬ | 编译、检索、回答 | 全文 |
+
+**三个口径，避免误读**：
+
+1. **页码不是每本书都有**：新书从 P1 之后解析默认带锚点（§9.8）；机械密封试点暂以行号引用（P1-2）。行号取 20-md 绝对行，页码取原书页码，双轨（§3.3 §14）。
+2. **本图是 §3.5 三 SOP 的纵向串联**，横向细节（每步怎么判对错）以出处小节为准，图里不重复。
+3. **⑫~⑬ 是"下次提问"路径**，与是否新建向量库无关：先走 wiki 页（§9.10），grep 原文只是兜底（§6.4）。
+
 ## 3.6 首批页面清单（P1 试点仍按一本书跑，但流程按 300 本设计）
 
 | # | 路径 | 类型 | 来自 |
@@ -532,7 +612,7 @@ D:\Shervon_KnowledgeBase\
 | 6 | `entities/机械密封-结构型式.md` | entity | 机械密封 第2~4 章 |
 | 7 | `entities/密封辅助件.md` | entity | 机械密封 |
 | 8 | `sources/化工原理.md` | source | 化工原理（**先修 %20 死链**） |
-| 9 | `concepts/流体流动-柏努利方程.md` | concept | 化工原理 第1章 |
+| 9 | `concepts/流体流动-伯努利方程.md` | concept | 化工原理 第1章 |
 | 10 | `concepts/传热-总传热系数.md` | concept | 化工原理 第4章 |
 | 11 | `sources/气液搅拌釜γ-CT.md` | source | 气液搅拌釜 |
 | 12 | `concepts/气液分散-搅拌功率.md` | concept | 气液搅拌釜 + 化工原理（**跨书**） |
@@ -1771,7 +1851,7 @@ Write-Host "带%编码的图片链接: $($hits.Count) 条（预期 86 附近，�
 | # | 页面 | 类型 | 说明 |
 |:--|:---|:---|:---|
 | 8 | sources/化工原理 | source | 死链修完后才入 |
-| 9 | concepts/流体流动-柏努利方程 | concept | 第 1 章 |
+| 9 | concepts/流体流动-伯努利方程 | concept | 第 1 章 |
 | 10 | concepts/传热-总传热系数 | concept | 第 4 章 |
 | 11 | sources/气液搅拌釜γ-CT | source | 锚点做完后入 |
 | 12 | concepts/气液分散-搅拌功率 | concept | **跨书**（+化工原理） |
