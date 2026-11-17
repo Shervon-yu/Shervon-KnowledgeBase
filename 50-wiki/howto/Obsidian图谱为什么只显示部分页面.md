@@ -6,7 +6,7 @@ domain: 运维
 status: stable
 confidence: high
 sources:
-  - book: 知识库蓝本
+  - book: kb-blueprint
     section: §3.12 Obsidian 星图方案
     lines: "#L740-#L800"
 related: ["[[新增一本书的入库清单]]", "[[盘点知识库完成度]]"]
@@ -27,7 +27,7 @@ updated: 2026-11-17
 40-new/
 90-tool/
 00-inbox/
-知识库蓝本.md
+kb-blueprint.md
 图片/
 ```
 
