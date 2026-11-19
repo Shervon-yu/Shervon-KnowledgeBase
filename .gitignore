@@ -1,0 +1,15 @@
+# 原件：版权材料，外部可重取，永不版本化
+10-source/
+# Syncthing 标记
+.stfolder/
+# 机器生成物：可重算，不入库
+30-wiki/catalog.md
+30-wiki/todo.md
+30-wiki/_lint.md
+# Python 缓存
+__pycache__/
+# MinerU 解析产物（zip 可达 100MB+，按 rules v3.3 只在磁盘保留）
+40-new/parse/
+# 一次性草稿与临时目录
+40-new/_acl/
+.obsidian/
