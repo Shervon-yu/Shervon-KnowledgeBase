@@ -6,7 +6,7 @@ t = io.open(p, encoding='utf-8').read()
 old = "4. 图索引覆盖：`sources` 页的图索引条数 ≥ 该章主要图题数，`整页图-pNN_n` 类无题图必须逐张说明「原书无题」；"
 new = ("4. 图索引：`python 90-tool\\scripts\\figure-index.py` 生成 `30-index\\figures-<入库夹名>.md`，"
        "行数（表体）须等于 20-md 内 `](图片/...)` 链接数；`整页图-pNN_n`、`未命名图N` 类无题图在 sources 页声明「无题非缺图」，"
-       "缺图另见 `40-new\\figures-report-*.json`；")
+       "缺图另见 `40-scratch\\figures-report-*.json`；")
 assert old in t
 io.open(p, 'w', encoding='utf-8', newline='\n').write(t.replace(old, new, 1))
 

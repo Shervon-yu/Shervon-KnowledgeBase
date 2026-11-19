@@ -3,7 +3,7 @@
 import io, json, os, re, glob
 
 Root = r'D:\Shervon_KnowledgeBase'
-src = glob.glob(os.path.join(Root, r'40-new\_pageidx-气液搅拌釜', '*.json'))
+src = glob.glob(os.path.join(Root, r'40-scratch\_pageidx-气液搅拌釜', '*.json'))
 assert src, 'no json'
 path = src[0]
 doc = json.load(io.open(path, encoding='utf-8'))
@@ -44,7 +44,7 @@ for r in rows:
     seen.setdefault(r['fig'], r)
 ordered = sorted(seen.values(), key=lambda r: (r['page'] or 0))
 
-out = os.path.join(Root, r'40-new\figure-pages-气液搅拌釜.csv')
+out = os.path.join(Root, r'40-scratch\figure-pages-气液搅拌釜.csv')
 with io.open(out, 'w', encoding='utf-8-sig', newline='') as f:
     f.write('图号,PDF页码,图题\n')
     for r in ordered:

@@ -12,10 +12,10 @@ MDROOT = os.path.join(ROOT, "20-md")
 
 
 def _latest_backup():
-    """取 40-new\\_acl\\rebuild-* 里最新的一个，作为旧 md 来源。"""
-    cands = sorted(glob.glob(os.path.join(ROOT, "40-new", "_acl", "rebuild-*")))
+    """取 40-scratch\\_acl\\rebuild-* 里最新的一个，作为旧 md 来源。"""
+    cands = sorted(glob.glob(os.path.join(ROOT, "40-scratch", "_acl", "rebuild-*")))
     if not cands:
-        raise SystemExit("找不到旧 md 备份目录（40-new\\_acl\\rebuild-*），无法重映射")
+        raise SystemExit("找不到旧 md 备份目录（40-scratch\\_acl\\rebuild-*），无法重映射")
     return cands[-1]
 
 

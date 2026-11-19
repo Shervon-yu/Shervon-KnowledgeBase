@@ -20,7 +20,7 @@ for tag, i1, i2, j1, j2 in sm.get_opcodes():
         if (i2 - i1) == (j2 - j1):
             for k in range(i2 - i1):
                 mapping[i1 + k + 1] = j1 + k + 1
-json.dump(mapping, io.open('40-new/line-map-20160-to-20166.json', 'w', encoding='utf-8'))
+json.dump(mapping, io.open('40-scratch/line-map-20160-to-20166.json', 'w', encoding='utf-8'))
 ident = sum(1 for k, v in mapping.items() if k == v)
 print('mapped', len(mapping), 'identity', ident)
 for probe in (1012, 1484, 17178, 1518, 14944, 15228, 19166):

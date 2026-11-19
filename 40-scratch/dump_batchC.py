@@ -16,5 +16,5 @@ for a, b in rng:
         if s.count('|') > 8:
             s = s[:150] + ' …'
         out.append('%d| %s' % (i + 1, s))
-io.open(r'D:\Shervon_KnowledgeBase\40-new\dump-batchC.txt', 'w', encoding='utf-8', newline='\n').write('\n'.join(out))
+io.open(r'D:\Shervon_KnowledgeBase\40-scratch\dump-batchC.txt', 'w', encoding='utf-8', newline='\n').write('\n'.join(out))
 print(len(out))

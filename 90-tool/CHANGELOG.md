@@ -88,7 +88,7 @@
 ## v3.7 — 2026-11-18（图索引可机器计数）
 
 - 新增 `90-tool\scripts\figure-index.py`：从 20-md 抽全部 `](图片/...)` 链接，输出 `30-index\figures-<入库夹名>.md`（行号/图名/所在节/是否整页/有无题注）。
-- `rules.md` §16 判据 ④ 改为可执行口径：图索引表体行数 = 图片链接数；`整页图-pNN_n`、`未命名图N` 类无题图在 sources 页声明「无题非缺图」，缺图另见 `40-new\figures-report-*.json`。
+- `rules.md` §16 判据 ④ 改为可执行口径：图索引表体行数 = 图片链接数；`整页图-pNN_n`、`未命名图N` 类无题图在 sources 页声明「无题非缺图」，缺图另见 `40-scratch\figures-report-*.json`。
 - 动机：v3.6 的 ④（561 图逐张说明）无法机器校验，且 561 行超过单页 150 行上限，逐页拆分会把 wiki 变成图目录。
 
 ## v3.6 — 2026-11-18（覆盖率门：把「读没读完」变成退出码）
@@ -105,7 +105,7 @@
   - 新增 `_cn2int()` 与 `_inject_missing_chapters()`：从目录行解析 17 章顺序，按「第 k 个 `### 第一节` ↔ 目录第 k 章」定位，MinerU 漏识的章标题（本书第十一、十二、十七章）倒序补插 `## 第X章 标题`。
 - `wiki-index.ps1`：页面数使单文件超过 120 行时，自动按 `domain` 拆分为 `index.md`（领域目录）+ `index-<domain>.md`（分册）；未超限时仍写单一 `index.md` 并清理旧分册。此前只打印警告不拆。
 - `wiki-lint.ps1`：①`index*.md` 不再计入页面（否则分册文件被当孤儿页/无来源页）；②index 漂移检查改为合并所有 `index*.md` 判定。
-- 本书据此重建：行数 20,166、锚点 538、`$$` 444、pipe 表 4944、图 561、`SELFCHECK unresolved=0`、七行验收全过；wiki 行号引用按 `40-new\line-map-20160-to-20166.json`（分段 +2/+4/+6）平移并抽样比对原文。
+- 本书据此重建：行数 20,166、锚点 538、`$$` 444、pipe 表 4944、图 561、`SELFCHECK unresolved=0`、七行验收全过；wiki 行号引用按 `40-scratch\line-map-20160-to-20166.json`（分段 +2/+4/+6）平移并抽样比对原文。
 - 教训：`write` 工具写 `.ps1` 不带 BOM，PowerShell 5.1 按 ANSI 读会因中文变乱码而报语法错；改完必须补 `EF BB BF`。
 
 ## v3.4 — 2026-11-17（页码锚点改用物理页序）
@@ -117,7 +117,7 @@
 
 ## v3.3 — 2026-11-17（一条龙收尾）
 
-- `ingest.ps1`：①`Invoke-Mineru` 返回 zip 路径；②解析产物 zip 复制到 `40-new\parse\<入库夹名>\` 永久保留（以前解析完即删，导致无法重建页码锚点）；③收尾在 md 锚点 <10 时自动调用 `ingest-build.ps1 -Book "<入库夹名>"`，一条命令跑到「七行验收表 + SELFCHECK」。
+- `ingest.ps1`：①`Invoke-Mineru` 返回 zip 路径；②解析产物 zip 复制到 `40-scratch\parse\<入库夹名>\` 永久保留（以前解析完即删，导致无法重建页码锚点）；③收尾在 md 锚点 <10 时自动调用 `ingest-build.ps1 -Book "<入库夹名>"`，一条命令跑到「七行验收表 + SELFCHECK」。
 - `check-links.ps1`：修 RENAME 分支丢目录前缀 bug（`Split-Path -Leaf` → 保留 `图片/` 前缀），此前会生成 `](图14.12…jpg)` 死链并把 `unresolved` 卡在 1。
 - `rules.md` v3.3：§2 改名后必须把 `missing` 改成剩余缺项并清旧 issues；§10 汇报模板加 `wiki`/`验收` 两行、收尾口径禁止「只列未完成」；§16 增「完成判据」四项；版本头加 v3.3 变更段。
 - `prompt-dsh.md` 重写：步骤 4 一条命令含 build+验收；新增 6~10 步 wiki 入库、`wiki-lint` 0 条、commit、汇报加三行；「规则文件」由禁改改为「可改但必须汇报并同步 VERSION/CHANGELOG」。
@@ -137,7 +137,7 @@
 - 新增 **50-wiki 层**（LLM Wiki）：`concepts` / `entities` / `sources` / `comparisons` / `howto` / `openq` 六个子目录 + `index.md` / `log.md` / `glossary.md`。raw（10-source + 20-md）→ wiki（50-wiki）→ schema（AGENTS.wiki.md + rules.md）三层，LLM 只写 50-wiki。
 - 新增 `90-tool\AGENTS.wiki.md`：wiki 层编辑契约（写者边界、唯一译名、断言必须有来源、页面硬约束、冲突与换代、ingest/query/lint SOP、禁止项）。
 - `rules.md` 追加 §12（50-wiki 层）/ §13（页面契约与 frontmatter）/ §14（书名+节号+行号引用格式）/ §15（ingest / query / lint SOP 与提交信息格式）。
-- 版本库接入：`git init` + 本地 P0a 基线快照；`.gitignore` 排除 `10-source\`、`.stfolder\`、`30-index\catalog.md`、`30-index\todo.md`、`50-wiki\_lint.md`、`__pycache__\`、`40-new\_acl\`。
+- 版本库接入：`git init` + 本地 P0a 基线快照；`.gitignore` 排除 `10-source\`、`.stfolder\`、`30-index\catalog.md`、`30-index\todo.md`、`50-wiki\_lint.md`、`__pycache__\`、`40-scratch\_acl\`。
 - 解析层（10-source / 20-md / 30-index）规则不变，v3.0 只加不改。
 
 ## v2.3 — 2026-11-12
@@ -157,7 +157,7 @@
 - 目录改为**扁平入库夹**：默认 `20-md\<入库夹>\<入库夹>.md`，`10-source` 同构镜像。
 - 新增第 4 节分层规则：单夹 ≤40；N<20 扁平、20≤N≤40 可分组（同主题 ≥3 个）、N>40 必须分组（40^(x-1)<N≤40^x，允许分类夹与入库夹混层）。
 - `taxonomy.md` 改为**建议清单**，不再是白名单；`01-books`/`02-standards` 类型层取消。
-- 外部 agent 新建物统一放 `40-new\`（原 `40-newfolder`/`50-newfile` 作废）。
+- 外部 agent 新建物统一放 `40-scratch\`（原 `40-scratchfolder`/`50-newfile` 作废）。
 - 图名规则更新：禁用括号，多子图用 `_a`/`_b`（括号会截断 markdown 链接）。
 - `ingest.ps1` v2.0：`-Layer` 参数、按 N 自动选层、文件名括号归一、图 byte 级去重、入库后自动跑 `figures.py`。
 - `catalog.ps1`：书目按层级分组；`todo.md` 第 4 节改为「层级体检」（N、所需层数、超限夹）。
@@ -171,7 +171,7 @@
 - `00-inbox` 改为传送带：**入库成功后清空**该文件夹（原件进 `10-source`）；解析失败/手工回退时保留。
 - 新增 4.4「重排时机」：**每新增一个入库夹就重排一次**——按现有分类夹内实际入库夹判断归属，合适就进，必要时合并新建或改名分类夹，重排后必须重跑 `catalog.ps1`。
 - `ingest.ps1`：图目录改为 `<入库夹>\图片`，md 引用加 `图片/` 前缀。
-- `figures.py`：在 `图片\` 内改名/去重/补链，链接写 `图片/...`；报告路径修正为仓库根下 `40-new\`（原先算错会落回书目录）。
+- `figures.py`：在 `图片\` 内改名/去重/补链，链接写 `图片/...`；报告路径修正为仓库根下 `40-scratch\`（原先算错会落回书目录）。
 - 现有 2 本书已迁移：试点书 396 张图、化工原理 340 张图，断链 0（化工另有 86 处 `page_*_chart_*` 图 MinerU 未导出，见 todo）。
 
 ## v1.2 — 2026-11-09

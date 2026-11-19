@@ -12,7 +12,7 @@
 | `10-source\` | 只增（人放原件） | 任何脚本与 LLM 不得改、不得删 |
 | `20-md\` | 仅 `ingest.ps1` 与 `figures.py`、`check-links.ps1` | LLM 不得写；重解析不得波及 `30-wiki` |
 | `30-wiki\`（机器区） | 仅 `catalog.ps1`、`wiki-index.ps1`、`wiki-lint.ps1`、`figure-index.py` 等生成脚本 | LLM 不得改成品，只改生成脚本 |
-| `40-new\` | 任何人放新建物 | 不作为长期存放地 |
+| `40-scratch\` | 任何人放新建物 | 不作为长期存放地 |
 | `30-wiki\`（人写区） | 仅 LLM（本契约执行者） | 人在 Obsidian 中只读；改动靠 git 审计发现 |
 | `90-tool\` | 人（改规则） | LLM 不得擅自改规则文件 |
 
@@ -124,7 +124,7 @@ updated: 2026-11-16
 ## 5. Ingest 六步（一次到位，v3.2）
 
 0. 查重：查 `glossary.md` + `pages\` + 全库 `question`，命中则改为改旧页。
-1. 解析：`ingest.ps1` 跑 MinerU，产物落 `40-new\parse\<入库夹名>\`（`middle_json` 是唯一可信来源）。
+1. 解析：`ingest.ps1` 跑 MinerU，产物落 `40-scratch\parse\<入库夹名>\`（`middle_json` 是唯一可信来源）。
 2. 生成 + 验收：一条命令
    ```
    powershell -NoProfile -ExecutionPolicy Bypass -File "90-tool\scripts\ingest-build.ps1" -Book "<入库夹名>"

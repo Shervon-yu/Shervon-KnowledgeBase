@@ -4,7 +4,7 @@ import io, json, os, re, glob
 from collections import defaultdict
 
 Root = r'D:\Shervon_KnowledgeBase'
-path = glob.glob(os.path.join(Root, r'40-new\_pageidx-气液搅拌釜', '*.json'))[0]
+path = glob.glob(os.path.join(Root, r'40-scratch\_pageidx-气液搅拌釜', '*.json'))[0]
 doc = json.load(io.open(path, encoding='utf-8'))
 pages = doc.get('pages') or []
 
@@ -45,7 +45,7 @@ def key(f):
     a, b = re.match(r'图(\d+)\.(\d+)', f).groups()
     return (int(a), int(b))
 
-out = os.path.join(Root, r'40-new\figure-pages-气液搅拌釜.csv')
+out = os.path.join(Root, r'40-scratch\figure-pages-气液搅拌釜.csv')
 with io.open(out, 'w', encoding='utf-8-sig', newline='') as f:
     f.write('图号,题注页,首次出现页,全部出现页\n')
     for fig in sorted(page_figs, key=key):

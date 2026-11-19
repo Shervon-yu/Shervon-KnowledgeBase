@@ -57,8 +57,8 @@ patch(r'90-tool\rules.md', [
      '5. 汇报里注明"手工完成，未跑脚本"。\n6. 留在 `00-inbox` 的文件夹里放一个空的 `_done` 标记文件；下次会话按第 2 节跳过它，并在 `todo.md` 里记一笔。'),
     ('质检：ok / warn / quarantine\n元数据缺失：edition, year',
      '质检：ok / warn / quarantine\n图链：SELFCHECK refs=N ok=N unresolved=0\n缺图：N 张（清单见 todo.md）\n元数据缺失：edition, year'),
-    ('`90-tool\\scripts\\figures.py`：读 MinerU 产物 → 按 bbox 把图题配回图片 → 按 SHA256 去重 → 改名为 `图X.Y 说明[_a].jpg` 并放进 `图片\\` → 改写 md 引用为 `图片/...` → 报告写 `40-new\\figures-report-<入库夹>.json`。',
-     '`90-tool\\scripts\\figures.py`：读 MinerU 产物 → 按 bbox 把图题配回图片 → 按 SHA256 去重 → 改名为 `图X.Y 说明[_a].jpg` 并放进 `图片\\` → 改写 md 引用为 `图片/...` → 报告写 `40-new\\figures-report-<入库夹>.json`。**它由 `ingest.ps1` 内部调用，MinerU 原始产物随后即被删除**——只有另外保留了产物时才可手工重跑（`--mineru` 指向那份产物）。'),
+    ('`90-tool\\scripts\\figures.py`：读 MinerU 产物 → 按 bbox 把图题配回图片 → 按 SHA256 去重 → 改名为 `图X.Y 说明[_a].jpg` 并放进 `图片\\` → 改写 md 引用为 `图片/...` → 报告写 `40-scratch\\figures-report-<入库夹>.json`。',
+     '`90-tool\\scripts\\figures.py`：读 MinerU 产物 → 按 bbox 把图题配回图片 → 按 SHA256 去重 → 改名为 `图X.Y 说明[_a].jpg` 并放进 `图片\\` → 改写 md 引用为 `图片/...` → 报告写 `40-scratch\\figures-report-<入库夹>.json`。**它由 `ingest.ps1` 内部调用，MinerU 原始产物随后即被删除**——只有另外保留了产物时才可手工重跑（`--mineru` 指向那份产物）。'),
     ('- 跑完必须重新检查：`broken` 应为 0。',
      '- 跑完必须重新检查：`broken` 应为 0。用 `check-links.ps1 -Md <md>`（默认 dry-run，`-Fix` 才修），输出 `unresolved=0` 才算过。'),
 ])
@@ -66,7 +66,7 @@ patch(r'90-tool\rules.md', [
 # ---------------- prompt-dsh.md ----------------
 patch(r'90-tool\prompt-dsh.md', [
     ('0. 先启动费用锁（见上【费用锁】），确认看门狗进程起来了，再往下走。',
-     '0. 先启动费用锁（见上【费用锁】），用 `job_output` 确认首屏已打印；再确认 `40-new\\.ingest.lock` 不存在（存在=另一本正在入，停）。'),
+     '0. 先启动费用锁（见上【费用锁】），用 `job_output` 确认首屏已打印；再确认 `40-scratch\\.ingest.lock` 不存在（存在=另一本正在入，停）。'),
     ('   - 空 → 停，告诉我放书。',
      '   - 空 → 停，告诉我放书。\n   - 夹里有 `_done` 标记 → 是手工回退留下的，跳过并告诉我。'),
     ('   图名归一（`figures.py --dedupe --apply`）和重建索引（`catalog.ps1`）**`ingest.ps1` 内部已跑**，不必再单跑；只有它报出图名未归一时，才按 `rules.md` 第 11 节手工补跑（那时 MinerU 产物已被脚本清掉，`--mineru` 需先保留）。',
@@ -114,7 +114,7 @@ readme = u'''# Shervon 知识库
 | `10-source\\` | 原件（PDF / 图片 / docx），只读存档 | 只增不改 |
 | `20-md\\` | 解析出的正文 `.md` + 每本书的 `图片\\` | 脚本生成 |
 | `30-index\\` | `manifest.csv` / `catalog.md` / `todo.md` | `catalog.ps1` 重建 |
-| `40-new\\` | 报告、日志、脚本、临时目录 | 只往这里放新建物 |
+| `40-scratch\\` | 报告、日志、脚本、临时目录 | 只往这里放新建物 |
 | `90-tool\\` | 规则（`rules.md`）、提示词、脚本 | 改规则时 |
 
 一本书的正文与图：
@@ -171,7 +171,7 @@ readme = u'''# Shervon 知识库
 | 中文乱码 / ParserError | `.ps1` 缺 UTF-8 BOM | 存成“UTF-8 带 BOM” |
 | PDF 全是 pending | 解析出错 | 看 `30-index\\issues.log` 末尾报错；MinerU 在 `C:\\Users\\shervon\\.local\\mineru`（4.1.7） |
 | md 里“找不到图片” | 图名含 `[]` 或图未导出 | 跑 `check-links.ps1 -Md <md> -Fix` |
-| 入库报锁 | `40-new\\.ingest.lock` 存在 | 确认没有别的入库会话后删掉它 |
+| 入库报锁 | `40-scratch\\.ingest.lock` 存在 | 确认没有别的入库会话后删掉它 |
 | docx 读不出 | 老 `.doc` 格式 | 另存为 `.docx` |
 '''
 with io.open(os.path.join(ROOT, 'README.md'), 'wb') as f:

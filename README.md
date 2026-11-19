@@ -10,7 +10,7 @@
 | `10-source\` | 原件（PDF / 图片 / docx），只读存档 | 只增不改 |
 | `20-md\` | 解析出的正文 `.md` + 每本书的 `图片\` | 脚本生成 |
 | `30-wiki\`（机器区） | `manifest.csv` / `catalog.md` / `todo.md` / `issues.log` / `figures-*.md` / `index*.md` / `_lint.md` | 脚本重建（`catalog.ps1`、`wiki-index.ps1`、`wiki-lint.ps1`、`figure-index.py`） |
-| `40-new\` | 报告、日志、脚本、临时目录 | 只往这里放新建物 |
+| `40-scratch\` | 报告、日志、脚本、临时目录 | 只往这里放新建物 |
 | `30-wiki\`（人写区） | LLM Wiki：概念/实体/书页/对比/做法/未决，加 `glossary.md`、`log.md` | 只有 LLM 写；人在 Obsidian 只读 |
 | `90-tool\` | 规则（`rules.md`、`AGENTS.wiki.md`）、提示词、脚本 | 改规则时 |
 
@@ -27,7 +27,7 @@
 - **设计与实施方案**（P0–P4 施工图、脚本原文、验收判据、成本与规模阈值）：`kb-blueprint.md`，2471 行（含 2026-11-17 并入的使用说明），2026-11-16 由两份调研文档合并。
 - **写 wiki 的编辑契约**：`90-tool\AGENTS.wiki.md`（三层写者边界、frontmatter 顺序、页面硬约束）。
 - **解析层规则**：`90-tool\rules.md`（v3.0，含 §12–§15）。
-- **Obsidian**：本夹直接作 vault 打开。`.obsidian\app.json` 已把 `10-source\`、`20-md\`、`40-new\`、`90-tool\`、`00-inbox\` 列为排除，星图只显示 `30-wiki` 与根目录文档；改后需重启 Obsidian 才生效。`.obsidian\` 不进版本库（`.gitignore`）。
+- **Obsidian**：本夹直接作 vault 打开。`.obsidian\app.json` 已把 `10-source\`、`20-md\`、`40-scratch\`、`90-tool\`、`00-inbox\` 列为排除，星图只显示 `30-wiki` 与根目录文档；改后需重启 Obsidian 才生效。`.obsidian\` 不进版本库（`.gitignore`）。
 
 ## 往库里加资料
 
@@ -74,5 +74,5 @@
 | 中文乱码 / ParserError | `.ps1` 缺 UTF-8 BOM | 存成“UTF-8 带 BOM” |
 | PDF 全是 pending | 解析出错 | 看 `30-wiki\issues.log` 末尾报错；MinerU 在 `C:\Users\shervon\.local\mineru`（4.1.7） |
 | md 里“找不到图片” | 图名含 `[]` 或图未导出 | 跑 `check-links.ps1 -Md <md> -Fix` |
-| 入库报锁 | `40-new\.ingest.lock` 存在 | 确认没有别的入库会话后删掉它 |
+| 入库报锁 | `40-scratch\.ingest.lock` 存在 | 确认没有别的入库会话后删掉它 |
 | docx 读不出 | 老 `.doc` 格式 | 另存为 `.docx` |

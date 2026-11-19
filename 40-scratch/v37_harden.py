@@ -84,7 +84,7 @@ new = """6. 入 wiki（按 `90-tool\\AGENTS.wiki.md` §5 六步）：写 `50-wik
 7. **覆盖率门（不通过不许往下走）**：`python 90-tool\\scripts\\coverage.py -Book "<入库夹名>" --strict`。
    - 退出码非 0：按打印的 UNCOVERED 小节逐节读 md、成页，回到第 6 步；直到 `uncovered=0`。
    - 判据是「每个 `###` 小节都至少被 wiki 页引用一次」，不是页数指标。
-8. 图索引：`python 90-tool\\scripts\\figure-index.py -Book "<入库夹名>"`，核对表体行数 = 20-md 内 `](图片/...)` 链接数；整页/无题图在 sources 页声明「无题非缺图」，有题无图写进 sources「已知缺陷」并指向 `40-new\\figures-report-*.json`。
+8. 图索引：`python 90-tool\\scripts\\figure-index.py -Book "<入库夹名>"`，核对表体行数 = 20-md 内 `](图片/...)` 链接数；整页/无题图在 sources 页声明「无题非缺图」，有题无图写进 sources「已知缺陷」并指向 `40-scratch\\figures-report-*.json`。
 9. `powershell -NoProfile -ExecutionPolicy Bypass -File "90-tool\\scripts\\wiki-index.ps1"`（页面 >120 行会自动分册）→ `wiki-lint.ps1` 八项全绿（死链/孤儿/无来源/超长/同义/过期/index 漂移/图无转述），有问题就改到 0。
 10. `git add -A; git commit -m "wiki(ingest): <书名> touch=N"`（N = 新增+改动页数）。
 11. 打开 `30-index\\todo.md`，把新增待办逐条念给我；有未闭合项就写进 `50-wiki\\openq\\`。

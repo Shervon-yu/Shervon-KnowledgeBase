@@ -5,7 +5,7 @@ import io, json, os, re, glob
 Root = r'D:\Shervon_KnowledgeBase'
 book = '气液搅拌釜γ-CT测量、成像与模拟_刘跃进、韩路长_第1版_2014'
 md = os.path.join(Root, r'20-md', book, book + '.md')
-js = glob.glob(os.path.join(Root, r'40-new\_pageidx-气液搅拌釜', '*.json'))
+js = glob.glob(os.path.join(Root, r'40-scratch\_pageidx-气液搅拌釜', '*.json'))
 assert js, 'middle json missing'
 
 doc = json.load(io.open(js[0], encoding='utf-8'))

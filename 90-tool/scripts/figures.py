@@ -335,7 +335,7 @@ def main():
             if not (REF_RE.search(prev) or REF_RE.search(s)):
                 report['missing'].append({'line': i + 1, 'caption': s[:80]})
 
-    # 仓库根 = 最近的名为 20-md 的祖先的上一级；报告统一放 <根>\40-new
+    # 仓库根 = 最近的名为 20-md 的祖先的上一级；报告统一放 <根>\40-scratch
     root, cur = None, book
     while True:
         cur = os.path.dirname(cur)
@@ -344,7 +344,7 @@ def main():
         if os.path.basename(cur) == '20-md':
             root = os.path.dirname(cur)
             break
-    scratch = os.path.join(root, '40-new') if root else book
+    scratch = os.path.join(root, '40-scratch') if root else book
     if not os.path.isdir(scratch):
         scratch = book
     out = os.path.join(scratch, 'figures-report-' + os.path.basename(book) + '.json')

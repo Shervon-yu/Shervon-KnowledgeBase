@@ -293,7 +293,7 @@ D:\Shervon_KnowledgeBase\
 ├─ 10-source\           3 个入库夹，192.3 MB 原件
 ├─ 20-md\               909 个图片 + 3 个 .md（2.4 MB 文本），235.8 MB 图
 ├─ 30-index\            catalog.md / manifest.csv / todo.md / issues.log
-├─ 40-new\              12 个脚本与报告（含 figures-report JSON、_append_page_appendix.py）
+├─ 40-scratch\              12 个脚本与报告（含 figures-report JSON、_append_page_appendix.py）
 ├─ 90-tool\             rules.md / prompt*.md / taxonomy.md / CHANGELOG / VERSION=2.3
 │  └─ scripts\          ingest.ps1(31KB) / catalog.ps1(13KB) / check-links.ps1 / figures.py / budget-watch.ps1
 └─ README.md            71 行，入口说明
@@ -342,7 +342,7 @@ D:\Shervon_KnowledgeBase\
 **问题 3：书内没有可分页的锚点。**
 【实测】3 个 md 都是单文件 6k~17k 行，无 `<!-- page: N -->` 之类分页标记。
 → 只能按**行号**或**标题文本**引用，不能按"第 137 页"引用。而工程书里"第 137 页图 6-3"是最自然的引用单位。
-→ 好消息：【实测】你的 `40-new\` 里已经有 `_append_page_appendix.py`（名字显示它做过"追加页码附录"的尝试）与 figures-report JSON——**页码锚点的雏形你已经自己做过一次**。完整方案见 §9.8。
+→ 好消息：【实测】你的 `40-scratch\` 里已经有 `_append_page_appendix.py`（名字显示它做过"追加页码附录"的尝试）与 figures-report JSON——**页码锚点的雏形你已经自己做过一次**。完整方案见 §9.8。
 
 **问题 4：没有任何版本历史。**
 【实测】根目录无 `.git`；有 `.stfolder`（Syncthing 标记）。
@@ -417,7 +417,7 @@ D:\Shervon_KnowledgeBase\
 ├─ 10-source\           【raw】原件，一字节不改
 ├─ 20-md\               【raw 派生】解析全文 + 图，脚本独占
 ├─ 30-index\            【机器索引】catalog / todo / manifest（不变，继续自动生成）
-├─ 40-new\              【草稿】报告、一次性脚本
+├─ 40-scratch\              【草稿】报告、一次性脚本
 ├─ 50-wiki\             ★【新增：LLM 独占的综合层】
 │  ├─ index.md          总目录（按主题分类，每类一行，指向子索引）
 │  ├─ log.md            append-only 时间线
@@ -526,7 +526,7 @@ D:\Shervon_KnowledgeBase\
 > 全流程 14 步图（你 → 机 → 我 → 问）见 **第三部分 §2.7**，本节只留 SOP 表格。
 
 > **v3.2 起**：图中 ②③④⑤ 四步已收拢成一条命令 `90-tool\scripts\ingest-build.ps1 -Book "<入库夹名>"`（生成 + 定名 + 归档未引用图 + 图链自检 + 七行验收）。手写 md 的做法作废，见 `rules.md` §16。
-> **v3.3 起**：ingest.ps1 收尾会自动调用它（md 无锚点时），MinerU zip 永久留在 40-new\parse\<入库夹名>\；完成判据见 
+> **v3.3 起**：ingest.ps1 收尾会自动调用它（md 无锚点时），MinerU zip 永久留在 40-scratch\parse\<入库夹名>\；完成判据见 
 ules.md §16（七行验收 + SELFCHECK=0 + wiki-lint 0 + 已 commit）。
 
 ### 3.6 首批页面清单（P1 试点仍按一本书跑，但流程按 300 本设计）
@@ -645,7 +645,7 @@ git init
 
 # GitHub：建一个 **私有（private）** 仓库 —— 你的书是版权材料，绝对不能 public
 git remote add origin https://github.com/<你>/Shervon-KnowledgeBase.git
-git add 20-md 30-index 40-new 50-wiki 90-tool README.md AGENTS.md
+git add 20-md 30-index 40-scratch 50-wiki 90-tool README.md AGENTS.md
 git commit -m "P0: LLM Wiki 地基"
 git push -u origin main
 ```
@@ -977,7 +977,7 @@ git push -u origin main
 | 7 | **marp-team/marp-cli**（[README](https://github.com/marp-team/marp-cli)） | markdown → HTML/CSS/PDF/PPTX/**图片**；npx 即用；PDF/PPTX 需 Chrome / Edge / Firefox；作者 yhatt；MIT | wiki 页 → 汇报幻灯片，零二次排版 | 非汇报场景不装（Karpathy 原文也只把它当输出形态之一） |
 | 8 | **A-MEM**（[arXiv 2502.12110](https://arxiv.org/abs/2502.12110)，NeurIPS 2025） | Zettelkasten 式原子记忆 + 结构化属性（contextual description / keywords / tags）+ **新记忆触发旧记忆"演化"**；代码 A-mem（评估）/ A-mem-sys | ① 单页原子化（150 行上限）② "ingest 触发相关页更新" | **它是 agent 对话记忆，不是文件知识库**；不引其检索算法 |
 | 9 | **Obsidian graph view + 双向链接**（内置功能，[文档](https://help.obsidian.md/plugins/graph)） | 星图看枢纽/孤儿页；反向链接看"谁引用了我"；**只读文件夹也能看** | 人机共读的可视层 + 孤儿页审计 | 不占"项目"位；不上它的同步/协作 |
-| 10 | **你的现有资产**（本机实测） | MinerU 4.1.7 管线（10-source→20-md）；catalog / manifest / todo / issues.log；check-links.ps1；三本中文工程书 2.43 MB / 909 图；`40-new` 里有分页后处理雏形 | 解析底座 + 已有三操作骨架 + 真实规模数据 | — |
+| 10 | **你的现有资产**（本机实测） | MinerU 4.1.7 管线（10-source→20-md）；catalog / manifest / todo / issues.log；check-links.ps1；三本中文工程书 2.43 MB / 909 图；`40-scratch` 里有分页后处理雏形 | 解析底座 + 已有三操作骨架 + 真实规模数据 | — |
 
 ### 8.2 照搬现成方案会怎样：三条路线试算
 
@@ -1129,7 +1129,7 @@ status: active|draft|stale|superseded ｜ confidence: high|medium|low ｜ supers
 ### 9.8 分页标记（`<!-- page: N -->`）能在解析阶段加吗
 
 - **能，且 MinerU 已经给了原料**：MinerU 输出 `middle.json` 里每个块带 `page_idx`——只是你的 ingest.ps1 没有把它写成锚点。**最佳落点 = ingest.ps1 的后处理**：按 `page_idx` 在行间插入 `<!-- page: N -->`，以后引用 = `#L行号` + `页码` 双轨。
-- **不用重解析全库**：MinerU 支持只输出 middle.json（`--output` 选中间产物），你甚至可以只重跑"中间产物"这一步；`40-new\` 里已有 `_append_page_appendix.py` 与 figures-report JSON 的雏形，说明这条路你走过一半。
+- **不用重解析全库**：MinerU 支持只输出 middle.json（`--output` 选中间产物），你甚至可以只重跑"中间产物"这一步；`40-scratch\` 里已有 `_append_page_appendix.py` 与 figures-report JSON 的雏形，说明这条路你走过一半。
 - 详细方案见 §3.7 的 `md-anchor.ps1`。**新书从 P1 之后起，解析默认带锚点；三本旧书用脚本补。**
 
 ### 9.9 git 怎么存，本地和 GitHub 都同步
@@ -1472,13 +1472,13 @@ grep index → 读 ≤10 候选页 → 回答带 §节号/行号 → 判断回�
 | git | **未安装**（三个常见路径均不存在） | P0-1 必须先装 |
 | 包管理 | winget 可用 | 用它装 git |
 | PowerShell | 5.1.26100.6584（**不是 pwsh 7**） | 脚本一律 PS5.1 语法；含中文的 .ps1 存 UTF-8 BOM |
-| 根目录 | .stfolder / 00-inbox / 10-source / 20-md / 30-index / 40-new / 90-tool / README.md / 主文档 | 无 .git、无 .stignore、无 50-wiki |
+| 根目录 | .stfolder / 00-inbox / 10-source / 20-md / 30-index / 40-scratch / 90-tool / README.md / 主文档 | 无 .git、无 .stignore、无 50-wiki |
 | 20-md 三书 | 化工原理 1086836B｜搅拌与混合设备 1362747B｜气液搅拌釜 351311B | 三本 md 均**无页码锚点**（`<!-- page:` 计数=0） |
 | 死链 | 化工原理 86 条（`%20` 未解码，图实际存在） | P2-1 解码，不是删链 |
 | 假标题 | 试点书 351 个 `## ` 中 163 个 `(n)` 型假标题（46%） | P1-1 降级 |
 | 编码矩阵 | 化工原理/气液搅拌釜 md：无BOM+LF；试点书 md：无BOM+**CRLF**；manifest.csv BOM+CRLF；rules.md BOM+LF | git 设 core.autocrlf=false；改文件保持原 BOM/行尾 |
 | 30-index | catalog.md（自动生成勿手改）、manifest.csv 15 列、todo.md、issues.log | catalog/todo 是生成物 → 入 .gitignore |
-| 40-new | **已有**气液搅拌釜的 MinerU middle.json（1.16MB）+ 页码/图页 CSV + 两份 figures-report + links-fix 记录 | P2-2 页码锚点只此一本有原料 |
+| 40-scratch | **已有**气液搅拌釜的 MinerU middle.json（1.16MB）+ 页码/图页 CSV + 两份 figures-report + links-fix 记录 | P2-2 页码锚点只此一本有原料 |
 | DSH kb 库 | 试点书 836 chunk 曾入库（2026-11-18 出库后为空）；另两本未入（README：索引由你发话才做） | 本方案不动 kb；检索不均由 50-wiki + grep 兜底 |
 | 成本锚 | deepseek-flash off-peak：输入 ¥1.08/M、输出 ¥4.32/M（peak=北京时间周一至五 9–12 点、14–18 点，翻倍） | 全案报价用 off-peak 口径 |
 
@@ -1505,7 +1505,7 @@ grep index → 读 ≤10 候选页 → 回答带 §节号/行号 → 判断回�
  │   concepts\ entities\ sources\ comparisons\ howto\ openq\           │
  │      ▲                                                              │
  │ 90-tool\    【schema】rules.md（加工，v3.0）+ AGENTS.wiki.md（编辑）  │
- │      30-index\（机器索引，自动生成）+ 40-new\（草稿与一次性脚本）      │
+ │      30-index\（机器索引，自动生成）+ 40-scratch\（草稿与一次性脚本）      │
  └────────────────────────────────────────────────────────────────────┘
             │ git（本地历史 + GitHub 私有仓库，每次 ingest 一个 commit）
             ▼
@@ -1532,7 +1532,7 @@ D:\Shervon_KnowledgeBase\
 │  ├─ <入库夹>…\          md + 图片
 │  └─ 气液搅拌釜…\        md + 图片
 ├─ 30-index\             catalog.md / manifest.csv / todo.md / issues.log
-├─ 40-new\               历史补丁脚本 + pageidx/figures 材料
+├─ 40-scratch\               历史补丁脚本 + pageidx/figures 材料
 ├─ 90-tool\              rules.md v2.3 / prompts / taxonomy / CHANGELOG / VERSION / scripts\（5 个）
 └─ README.md
 ```
@@ -1548,7 +1548,7 @@ D:\Shervon_KnowledgeBase\
 ├─ 10-source\            （不变，一字节不改）
 ├─ 20-md\                （不变结构；三处一次性修补：死链解码/假标题降级/气液搅拌釜页码锚点）
 ├─ 30-index\             （不变，继续自动生成）
-├─ 40-new\               （不变，P1-P3 各步报告落这里）
+├─ 40-scratch\               （不变，P1-P3 各步报告落这里）
 ├─ 50-wiki\              ★新增：LLM 独占综合层
 │  ├─ index.md           总目录（P3 起由 wiki-index.ps1 自动生成）
 │  ├─ log.md             append-only 时间线（每本书一条 ingest 记录）
@@ -1615,7 +1615,7 @@ git config core.quotepath false       # 中文路径在 git 输出里不乱码
 写入 `.gitignore`（全文见附录 A）后：
 
 ```powershell
-git add .gitignore 20-md 30-index 40-new 90-tool README.md
+git add .gitignore 20-md 30-index 40-scratch 90-tool README.md
 git status --short                     # 人工核对：绝不能出现 10-source/ 任何文件
 git commit -m "P0a: 基线快照（改造前，3 本书）"
 git remote add origin https://github.com/<你>/Shervon-KnowledgeBase.git
@@ -1690,13 +1690,13 @@ Write-Host "假标题计数: $n （预期 163，不是这个数就停）"
   1. **dry-run 与替换分两步**，数字对不上（≠163）立刻停，先把真实数字报告给你。
   2. 该文件是 CRLF → 用 `[IO.File]::ReadAllText` 保留 `\r\n`，写回无 BOM UTF-8，**不换行尾**。
   3. PowerShell 里替换串含 `$1` 必须用**单引号** `'**$1**'`，双引号会被 PS 当变量吃掉。
-  4. 这是对 20-md 的一次性修补，记入 `40-new\` 报告 + CHANGELOG（例外，已在红线里声明）。
+  4. 这是对 20-md 的一次性修补，记入 `40-scratch\` 报告 + CHANGELOG（例外，已在红线里声明）。
 
 #### P1-2 页码锚点：试点书暂缓 ——【结论，先摆这】
 
-- 事实：三本书只有**气液搅拌釜**在 40-new 里有 MinerU middle.json；试点书/化工原理的 middle.json 按 rules §11 解析后已清理，重跑 MinerU 才能再拿。
+- 事实：三本书只有**气液搅拌釜**在 40-scratch 里有 MinerU middle.json；试点书/化工原理的 middle.json 按 rules §11 解析后已清理，重跑 MinerU 才能再拿。
 - 决定：P1 试点书的引用一律用 **行号**（`#L117-456`）；锚点等"重解析该 PDF"时由 `md-anchor.ps1` 自动补。不因此卡住试点。
-- 坑→改法：这步本来没人意识到"只有一本书有页码原料"，写方案时核对 40-new 才发现——所以 P2 的气液搅拌釜锚点与另两本分开列。
+- 坑→改法：这步本来没人意识到"只有一本书有页码原料"，写方案时核对 40-scratch 才发现——所以 P2 的气液搅拌釜锚点与另两本分开列。
 
 #### P1-3 写三个脚本 ——【我】
 
@@ -1745,7 +1745,7 @@ Write-Host "带%编码的图片链接: $($hits.Count) 条（预期 86 附近，�
 
 #### P2-2 气液搅拌釜页码锚点（唯一有原料的一本）——【我，先核对映射】
 
-- 事实：`40-new\_pageidx-气液搅拌釜\` 里 MinerU middle.json 的文件名是 **"汽液搅拌釜γ－CT测量、成像与模拟_(刘跃进…).json"**——与 20-md 目录名"气液搅拌釜γ-CT…"存在**汽/气**字与**全角－/半角-**两处差异。
+- 事实：`40-scratch\_pageidx-气液搅拌釜\` 里 MinerU middle.json 的文件名是 **"汽液搅拌釜γ－CT测量、成像与模拟_(刘跃进…).json"**——与 20-md 目录名"气液搅拌釜γ-CT…"存在**汽/气**字与**全角－/半角-**两处差异。
 - 动作：先把 json ↔ md ↔ PDF 三者的对应关系核对清楚（以 20-md 内 md 的实际内容与 json 内容抽样比对为准），再跑 `md-anchor.ps1`（带 -Json 参数显式指定路径）。
 - 产出：气液搅拌釜 md 出现 `<!-- page: N -->` 锚点（覆盖标题与图行）。
 - 验收：**你抽 5 处锚点翻 PDF 核对页码**；我核对匹配失败率报告 <5%。
@@ -1815,7 +1815,7 @@ Write-Host "带%编码的图片链接: $($hits.Count) 条（预期 86 附近，�
 | 6 | 死链根因是 %20 编码，不是图丢了 | todo.md 建议 `check-links.ps1 -Fix` 是删链，链和图都毁 | P2-1 只对链接内部解码，再用干跑验证 |
 | 7 | 假标题替换串 `'**$1**'` 用双引号会被 PS 吃变量 | 脚本静默出错 | 附录 C-1 用单引号 |
 | 8 | 页码锚点原料只有气液搅拌釜一份 | 原以为三本都能打锚点 | P1-2 试点书用行号引用、锚点挂 todo；P2-2 只做气液搅拌釜 |
-| 9 | 40-new 里 json 文件名"汽液搅拌釜γ－CT"与目录名"气液搅拌釜γ-CT"不一致 | 直接跑脚本会错位，插错页码=伪造引用 | P2-2 硬步骤"先人工核对映射再跑" |
+| 9 | 40-scratch 里 json 文件名"汽液搅拌釜γ－CT"与目录名"气液搅拌釜γ-CT"不一致 | 直接跑脚本会错位，插错页码=伪造引用 | P2-2 硬步骤"先人工核对映射再跑" |
 | 10 | 双机 Syncthing 会把 .git 互传打架 | 两机 git 对象冲突 | P0-3 后你在 Syncthing 的 .stignore 加 `.git/` |
 | 11 | Obsidian MCP 当前连的库不是本库 | 星图/backlinks 查到别处 | P0-7 手动"打开文件夹为库" |
 | 12 | "只读"没有强制锁 | 以为 Obsidian 有只读模式 | P0-7 约定+每次会话 `git status` 审计兜底 |
@@ -1902,7 +1902,7 @@ git：图片直推（235MB）                       git：图片>2GB 切 LFS    
 
 1. 本方案整体接受？文件名 `LLM-Wiki_落地执行方案.md` 可以吗？
 2. GitHub 仓库名 `Shervon-KnowledgeBase` + **私有**，同意？
-3. `.gitignore` 排除项：10-source / .stfolder / catalog.md / todo.md / _lint.md / __pycache__ / 40-new\_acl，同意？（图片 3 本时**直推**，不排除）
+3. `.gitignore` 排除项：10-source / .stfolder / catalog.md / todo.md / _lint.md / __pycache__ / 40-scratch\_acl，同意？（图片 3 本时**直推**，不排除）
 4. 提交节奏：P0 拆"基线快照 + 地基"两次，此后每本书一个 commit，同意？
 5. AGENTS.wiki.md 流程 = 我出骨架、**你定稿**、我落盘，同意？
 6. 首批 14 页清单（P1 的 7 页 + P2 的 7 页）同意？
@@ -1930,7 +1930,7 @@ git：图片直推（235MB）                       git：图片>2GB 切 LFS    
 # Python 缓存
 __pycache__/
 # 一次性草稿与临时目录
-40-new/_acl/
+40-scratch/_acl/
 ```
 
 ### 附录 B：rules.md 追加稿（§12–§15，P0-6 落盘用，原 11 节不动）
@@ -2022,7 +2022,7 @@ winget install --id Git.Git -e    # 装 git（P0-1）
 | 3 | 合格答案 = 书名 + 节号 + `#L行号`；没有就写「库里没有」。 |
 | 4 | **3 本书都已解析，但 DSH 检索索引 `kb` 曾只进 1 本**（试点书，2026-11-18 出库后为空）；另两本只能 grep（截至 2026-11-17）。 |
 | 5 | 只查询：装 DSH 就够（另需库索引，见 §5.4）。加新书：还要 Python + MinerU + 2.0 GB 模型。 |
-| 6 | 新文件只进 `40-new\`；`10-source\`、`20-md\` 不许手改。 |
+| 6 | 新文件只进 `40-scratch\`；`10-source\`、`20-md\` 不许手改。 |
 
 ## 1. 库里有什么（2026-11-17 实测）
 
@@ -2032,7 +2032,7 @@ winget install --id Git.Git -e    # 装 git（P0-1）
 | `10-source\` | 原件 PDF（只读存档）                 | 人放一次                        | 不改、不删          |
 | `20-md\`     | 解析出的正文 `.md` + 每本书的 `图片\`    | `ingest.ps1` / `figures.py` | 不改（要改走脚本）      |
 | `30-index\`  | 书目、待办、清单                     | `catalog.ps1`               | 只改生成脚本         |
-| `40-new\`    | 报告、日志、脚本、临时目录                | 任何人                         | 可以，别当仓库        |
+| `40-scratch\`    | 报告、日志、脚本、临时目录                | 任何人                         | 可以，别当仓库        |
 | `50-wiki\`   | 56 页结构化笔记（概念/实体/书页/对比/做法/未决） | 只有 LLM 写                    | Obsidian 里只读   |
 | `90-tool\`   | 规则、提示词、脚本                    | 人改规则                        | 改前看 `rules.md` |
 
@@ -2275,7 +2275,7 @@ winget install --id Git.Git -e    # 装 git（P0-1）
 | 3（60 s） | 问「离心泵最大允许安装高度怎么定？」 | 式(2-16) + `#L6723` + 例 2-4 + 边界 | 能落到计算，不只是概念 |
 | 4（30 s） | 问「搅拌功率关联式有吗？」 | 明确「库里没有」+ 缺口页 + 现有 3 个实验点 | 不会的地方直接说不会 |
 | 5（30 s） | 让 Agent 给出 `#L6723`，你在 md 里跳过去 | 原文与答案逐字对得上 | 可核对，防幻觉 |
-| 6（60 s） | 「把 2、3、4 整理成一页对比，带出处，存 docx」 | `40-new\` 里出现文件 | 能出交付物，不只是问答 |
+| 6（60 s） | 「把 2、3、4 整理成一页对比，带出处，存 docx」 | `40-scratch\` 里出现文件 | 能出交付物，不只是问答 |
 
 ### 4.3 预期结果与判定
 
@@ -2381,7 +2381,7 @@ DSH 的检索索引在 `%USERPROFILE%\.dsh\storages\dsh_library.json`（本机 1
 **Agent 硬规则**
 
 1. 不写 `10-source\`、`20-md\`；不删任何文件。
-2. 新文件只进 `40-new\`。
+2. 新文件只进 `40-scratch\`。
 3. 引用写 `《书名》§节号（#L行号）`；节号用书里真实编号，不猜。
 4. 回答分「库中依据 / 我的判断」两段。
 5. 不装软件、不联网、不上传资料。
@@ -2426,7 +2426,7 @@ library_add(path="D:\Shervon_KnowledgeBase\20-md\气液搅拌釜γ-CT测量、�
 | 检索结果没有行号 | 索引块只存正文 | grep 定位后再引用 |
 | 提示「禁止运行脚本」 | 执行策略 | 用带 `-ExecutionPolicy Bypass` 的完整命令 |
 | 中文乱码 / ParserError | `.ps1` 缺 UTF-8 BOM | 存成「UTF-8 带 BOM」 |
-| 入库报锁 | `40-new\.ingest.lock` 存在 | 确认没有别的入库会话后删掉 |
+| 入库报锁 | `40-scratch\.ingest.lock` 存在 | 确认没有别的入库会话后删掉 |
 | 图链报错含 `%20` | v3.1 前的旧写法 | 跑 `check-links.ps1 -Fix` |
 | Obsidian 图谱只有几个点 | 只显示未排除目录 | 正常，见 `50-wiki\howto\Obsidian图谱为什么只显示部分页面.md` |
 | 页数与 index.md 对不上 | 加了页没重跑索引 | 跑 `wiki-index.ps1` |
@@ -2446,7 +2446,7 @@ library_add(path="D:\Shervon_KnowledgeBase\20-md\气液搅拌釜γ-CT测量、�
 
 两个注意：
 
-1. 你现在的 `rules.md` 第 8 节禁止在根目录新增层级；放 `80-setup\` 属于例外，需在 `rules.md` 补一行「`80-setup\` 仅存安装包，不入库、不进 20-md」，否则下次入库的 Agent 可能按规则拒绝。也可以改放 `40-new\setup\`（合规，但 `40-new` 定位是临时目录）。
+1. 你现在的 `rules.md` 第 8 节禁止在根目录新增层级；放 `80-setup\` 属于例外，需在 `rules.md` 补一行「`80-setup\` 仅存安装包，不入库、不进 20-md」，否则下次入库的 Agent 可能按规则拒绝。也可以改放 `40-scratch\setup\`（合规，但 `40-scratch` 定位是临时目录）。
 2. 安装包体积大，别进 git：在 `.gitignore` 加 `80-setup/`（要改就说一声）。
 
 ## 10. 变更记录

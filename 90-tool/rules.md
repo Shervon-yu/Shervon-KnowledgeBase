@@ -39,7 +39,7 @@ v3.10 的改动（2026-11-19，建页判据以知识为单位）：
 
 v3.3 的改动（2026-11-17，一条龙收尾）：
 - `ingest.ps1` 收尾自动调用 `ingest-build.ps1`：MinerU 解析 → 图名归一 → 图链自检 → **带页码锚点重建正文 + 七行验收表** → `catalog.ps1`，一条命令跑完，不再手跑第二串命令。
-- MinerU 解析产物（含 `middle_json.json` 的 zip）由 `ingest.ps1` 复制到 `40-new\parse\<入库夹名>\` 并**永久保留**（v3.2 及以前解析完就删，导致无法重建锚点）；禁止手动删。
+- MinerU 解析产物（含 `middle_json.json` 的 zip）由 `ingest.ps1` 复制到 `40-scratch\parse\<入库夹名>\` 并**永久保留**（v3.2 及以前解析完就删，导致无法重建锚点）；禁止手动删。
 - 修 `check-links.ps1` RENAME 分支：原来用 `Split-Path -Leaf` 得新名，把 `图片/` 前缀吞掉，生成 `](图14.12…jpg)` 死链；改后保留原目录前缀。
 - §16 完成判据升到 v3.6 五条（新增覆盖率门 `coverage.py --strict` 与图索引覆盖）。
 - v3.7：图索引改为可机器计数（`figure-index.py -Book` → `30-wiki\figures-<入库夹名>.md`）；sources 必须块状三行（`book/section/lines`），行内写法会被 lint 判「无来源」；`.ps1` 必须带 UTF-8 BOM（PS 5.1 按 ANSI 读中文会语法错），含中文的 `.py` 用 `write` 落盘、勿用 here-string；新书禁用 `refs-remap.py`（`book_of()` 只收录化工原理/气液搅拌釜两本，其余一律按 §14 手工比对锚点重取行号）。
@@ -58,7 +58,7 @@ v2.2 相对 v2.1 的改动：`00-inbox` 顶层只有散文件（没有文件夹�
 
 v2.1 相对 v2.0 的改动：入库夹内插图统一进 `图片\`、正文与其他文档放夹根；`00-inbox` 原件入库成功后清空；新增「每进一本就重排」（4.4）；`ingest.ps1`/`figures.py` 已同步。
 
-v2.0 相对 v1.1 的改动：目录改为**扁平入库夹 + 按数量阈值自动分层**（见第 4 节）；外部新建物统一放 `40-new`；图名禁用括号、多子图用 `_a/_b`（见第 5 节）；新增图名归一工序 `figures.py`（见第 11 节）。
+v2.0 相对 v1.1 的改动：目录改为**扁平入库夹 + 按数量阈值自动分层**（见第 4 节）；外部新建物统一放 `40-scratch`；图名禁用括号、多子图用 `_a/_b`（见第 5 节）；新增图名归一工序 `figures.py`（见第 11 节）。
 
 ## 1. 总则
 
@@ -82,7 +82,7 @@ v2.0 相对 v1.1 的改动：目录改为**扁平入库夹 + 按数量阈值自�
 - 图示 → `20-md\<层级>\<入库夹>\图片\`（**所有插图集中放 `图片\`**，文件名见第 5 节）
 - 隔离 → `20-md\_quarantine\Q-<入库夹>.md`
 - 索引 → `30-wiki\manifest.csv`、`catalog.md`、`todo.md`（由 `catalog.ps1` 重建）
-- 新建物（脚本/日志/笔记/临时目录）→ `40-new\`，一律不许落到根目录或 `20-md`、`10-source` 里
+- 新建物（脚本/日志/笔记/临时目录）→ `40-scratch\`，一律不许落到根目录或 `20-md`、`10-source` 里
 
 `<层级>` 默认为空（即直接放 `20-md\<入库夹>`），只有第 4 节阈值触发时才出现分类夹；`10-source` 与 `20-md` 的层级必须完全镜像。
 
@@ -208,7 +208,7 @@ inbox：已清空
 
 ## 11. 图名归一工序（DSH 专用，入库后跑）
 
-`90-tool\scripts\figures.py`：读 MinerU 产物 → 按 bbox 把图题配回图片 → 按 SHA256 去重 → 改名为 `图X.Y 说明[_a].jpg` 并放进 `图片\` → 改写 md 引用为 `图片/...` → 报告写 `40-new\figures-report-<入库夹>.json`。**它由 `ingest.ps1` 内部调用，MinerU 原始产物随后即被删除**——只有另外保留了产物时才可手工重跑（`--mineru` 指向那份产物）。
+`90-tool\scripts\figures.py`：读 MinerU 产物 → 按 bbox 把图题配回图片 → 按 SHA256 去重 → 改名为 `图X.Y 说明[_a].jpg` 并放进 `图片\` → 改写 md 引用为 `图片/...` → 报告写 `40-scratch\figures-report-<入库夹>.json`。**它由 `ingest.ps1` 内部调用，MinerU 原始产物随后即被删除**——只有另外保留了产物时才可手工重跑（`--mineru` 指向那份产物）。
 
 ```
 python -X utf8 "D:\Shervon_KnowledgeBase\90-tool\scripts\figures.py" `
@@ -329,7 +329,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "D:\Shervon_KnowledgeBase\90
 
 ## 16. 解析产物 → 20-md：生成规范（v3.2）
 
-一条命令（MinerU 解析产物已在 `40-new\parse\<入库夹名>\` 或 `%TEMP%\mk-full\<入库夹名>\`）：
+一条命令（MinerU 解析产物已在 `40-scratch\parse\<入库夹名>\` 或 `%TEMP%\mk-full\<入库夹名>\`）：
 
 ```
 powershell -NoProfile -ExecutionPolicy Bypass -File "90-tool\scripts\ingest-build.ps1" -Book "<入库夹名>"
@@ -337,7 +337,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "90-tool\scripts\ingest-buil
 
 内部六步：`md-build.py write`（按页序重建）→ `fig-names.py apply`（无图题图定名）→ `md-build.py prune`（未引用图归档）→ `check-links.ps1`（图链自检）→ `md-build.py verify`（标题体检，v3.16）→ 验收表 8 行。
 
-v3.3 起 `ingest.ps1` 收尾**自动**调用本脚本（md 尚无锚点时），并把 MinerU zip 复制到 `40-new\parse\<入库夹名>\` 永久保留；单独手跑仅用于重建（`-Force`）。
+v3.3 起 `ingest.ps1` 收尾**自动**调用本脚本（md 尚无锚点时），并把 MinerU zip 复制到 `40-scratch\parse\<入库夹名>\` 永久保留；单独手跑仅用于重建（`-Force`）。
 
 **七条硬性产出**（缺一条都不算入库完成）：
 
@@ -359,7 +359,7 @@ v3.3 起 `ingest.ps1` 收尾**自动**调用本脚本（md 尚无锚点时），
 - md 已是生成版（锚点 ≥10 且无 `图_第NN页_`）时，`ingest-build.ps1` 默认跳过重建，避免把人工定好的图名打回页码名；确需重建加 `-Force`。
 - 新书（`refs-remap.py` 的 `book_of()` 未收录）**一律不用 refs-remap**，按 §14 用「旧/新 md 逐行比对 + 逐条原文校验」手工重取行号，只改本书专用页。
 - 重建会换掉全部行号（旧书）。步骤固定：`git checkout -- '30-wiki' kb-blueprint.md` → `refs-remap.py dry`（报告落 `%TEMP%`）→ 人工核 LCS<14 的条目 → `refs-remap.py apply`。**同一批文件重复 apply 会把新行号再当旧行号映射一次**，每次重试前必须先 `git checkout`。
-- `md-build.py prune` 把 md 未引用的图片移到 `40-new\_acl\orphan-images\<入库夹名>\`（可回滚，不删）。
+- `md-build.py prune` 把 md 未引用的图片移到 `40-scratch\_acl\orphan-images\<入库夹名>\`（可回滚，不删）。
 
 **提交守卫（v3.7）**：`git add -A` 之后、`git commit` 之前先跑 `powershell -File 90-tool\scripts\precommit-guard.ps1`；暂存区出现删除项即中止，确认是有意删除再加 `-AllowDelete`。动机：2026-11-18 一次 `git add -A` 把一整本试点书的删除（md+319 图+11 个 wiki 页）一并提交，靠 `git checkout <旧提交> -- <路径>` 才恢复。
 
@@ -367,7 +367,7 @@ v3.3 起 `ingest.ps1` 收尾**自动**调用本脚本（md 尚无锚点时），
 1. `ingest-build.ps1` 验收表八行全过（含标题体检 `OK`）+ `SELFCHECK unresolved=0`；
 2. `wiki-lint.ps1` 0 条（十项）；
 3. **覆盖率门** `coverage.py -Book "<入库夹名>" --strict` 退出码 0（本书 md 的每个 `###` 小节都至少被 wiki 引用一次；未被覆盖的节必须当场成页，不能留到汇报里）；
-4. 图索引：`python 90-tool\scripts\figure-index.py -Book "<入库夹名>"` 生成 `30-wiki\figures-<入库夹名>.md`，行数（表体）须等于 20-md 内 `](图片/...)` 链接数；`整页图-pNN_n`、`未命名图N` 类无题图在 sources 页声明「无题非缺图」，缺图另见 `40-new\figures-report-*.json`；
+4. 图索引：`python 90-tool\scripts\figure-index.py -Book "<入库夹名>"` 生成 `30-wiki\figures-<入库夹名>.md`，行数（表体）须等于 20-md 内 `](图片/...)` 链接数；`整页图-pNN_n`、`未命名图N` 类无题图在 sources 页声明「无题非缺图」，缺图另见 `40-scratch\figures-report-*.json`；
 5. 每页 `question` 非空、疑问句、全库唯一（lint 第 10 项 0 条）；
 6. 已 `git commit`；
 7. 表格内无未包裹 LaTeX：逐行检查 `20-md\<入库夹>\<入库夹>.md`，凡 `|` 开头且含 `\` 命令的行必须含 `$`。

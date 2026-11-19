@@ -15,5 +15,5 @@ for a, b in rng:
         if s.count('|') > 8:      # 超大表格行只留前 160 字
             s = s[:160] + ' …'
         out.append('%d| %s' % (i + 1, s))
-io.open(r'D:\Shervon_KnowledgeBase\40-new\dump-batchB.txt', 'w', encoding='utf-8', newline='\n').write('\n'.join(out))
+io.open(r'D:\Shervon_KnowledgeBase\40-scratch\dump-batchB.txt', 'w', encoding='utf-8', newline='\n').write('\n'.join(out))
 print(len(out))

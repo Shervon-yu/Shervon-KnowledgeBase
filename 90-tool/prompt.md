@@ -45,7 +45,7 @@ cmd /c dir D:\Shervon_KnowledgeBase\90-tool
 5. 按 `rules.md` 第 3 节写 md：frontmatter 十五个字段齐全，缺的写 `""` 并在 `missing` 里列出字段名，同时把缺项记进待补清单。
 ## 生成与验收（v3.2 起，优先于手改）
 
-解析产物在 `40-new\parse\<入库夹名>\` 后，**不要再手工拼 md**，一条命令出成品：
+解析产物在 `40-scratch\parse\<入库夹名>\` 后，**不要再手工拼 md**，一条命令出成品：
 
 ```
 powershell -NoProfile -ExecutionPolicy Bypass -File "90-tool\scripts\ingest-build.ps1" -Book "<入库夹名>"
@@ -76,10 +76,10 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "90-tool\scripts\ingest-buil
 
 除 `rules.md` 明确规定的入库产物路径（`10-source\`、`20-md\`、`30-wiki\`）之外：
 
-- 要新建**文件夹或文件** → 一律建在 `D:\Shervon_KnowledgeBase\40-new\` 里面（日志、脚本、笔记、临时目录都放这）。
-- 建议在里面按批次建子目录：`40-new\ingest-搅拌手册-20261110\`。
+- 要新建**文件夹或文件** → 一律建在 `D:\Shervon_KnowledgeBase\40-scratch\` 里面（日志、脚本、笔记、临时目录都放这）。
+- 建议在里面按批次建子目录：`40-scratch\ingest-搅拌手册-20261110\`。
 
-不许直接往知识库根目录放东西，也不许在 `40-new` 之外另开新目录。
+不许直接往知识库根目录放东西，也不许在 `40-scratch` 之外另开新目录。
 
 遇到规则没覆盖的情况：停下来，把问题和你的两个备选做法列出来问我，不要自己定。
 

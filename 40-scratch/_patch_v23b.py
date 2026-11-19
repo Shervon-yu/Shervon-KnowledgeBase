@@ -42,7 +42,7 @@ patch(os.path.join(ROOT, r'90-tool\prompt.md'), [
 
 patch(os.path.join(ROOT, r'90-tool\scripts\ingest.ps1'), [
     ("$Inbox    = Join-Path $Root '00-inbox'",
-     "$Inbox    = Join-Path $Root '00-inbox'\n$LockFile = Join-Path $Root '40-new\\.ingest.lock'\nif (-not $Preview) {\n    if (Test-Path -LiteralPath $LockFile) {\n        Write-Host \"已有入库任务在跑（$LockFile），本次退出。\" -ForegroundColor Red\n        exit 1\n    }\n    New-Item -ItemType File -Path $LockFile -Force | Out-Null\n}"),
+     "$Inbox    = Join-Path $Root '00-inbox'\n$LockFile = Join-Path $Root '40-scratch\\.ingest.lock'\nif (-not $Preview) {\n    if (Test-Path -LiteralPath $LockFile) {\n        Write-Host \"已有入库任务在跑（$LockFile），本次退出。\" -ForegroundColor Red\n        exit 1\n    }\n    New-Item -ItemType File -Path $LockFile -Force | Out-Null\n}"),
     ("'ocr: \"unknown\"'", "'ocr: \"auto\"'"),
     ('Write-Host ("`n汇总：入库',
      'if (-not $Preview -and (Test-Path -LiteralPath $LockFile)) { Remove-Item -LiteralPath $LockFile -Force -ErrorAction SilentlyContinue }\nWrite-Host ("`n汇总：入库'),

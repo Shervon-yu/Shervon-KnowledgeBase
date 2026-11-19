@@ -24,7 +24,7 @@
 
 按顺序做，不许跳步：
 
-0. 先启动费用锁（见上【费用锁】），用 `job_output` 确认首屏已打印；再确认 `40-new\.ingest.lock` 不存在（存在=另一本正在入，停）。
+0. 先启动费用锁（见上【费用锁】），用 `job_output` 确认首屏已打印；再确认 `40-scratch\.ingest.lock` 不存在（存在=另一本正在入，停）。
 1. 完整读 `90-tool\rules.md`、`90-tool\taxonomy.md`、`90-tool\AGENTS.wiki.md`。规则以文件为准，不要凭记忆。
 2. 看 `00-inbox\` 顶层：
    - 恰好 1 个文件夹 → 继续。
@@ -35,8 +35,8 @@
 3. 列出该文件夹里每个文件的类型和处理方式；遇到 `.doc/.ppt/.xls` 或读不出的文件，先告诉我再继续。
 4. 直接执行入库（默认不预览，不等待确认）：
    `powershell -NoProfile -ExecutionPolicy Bypass -File "D:\Shervon_KnowledgeBase\90-tool\scripts\ingest.ps1"`
-   `ingest.ps1`（v3.3）内部已串好整条链：MinerU 解析（产物永久留在 `40-new\parse\<入库夹名>\`）→ 图名归一（`figures.py --dedupe --apply`）→ 图链自检（`check-links.ps1 -Fix`）→ **带页码锚点重建正文（`ingest-build.ps1`，v3.16 起六步：重建→图名→prune→图链→标题体检→打印八行验收表）** → 重建索引（`catalog.ps1`）。
-   - 必须看到三样：`验收通过`、`标题体检：OK`（等价 `TITLE-CHECK OK`）、`SELFCHECK refs=N ok=N unresolved=0`。任何一行 `bad` 或标题体检 `FAIL` → 停，按 `rules.md` §16 修（缺解析产物就把 MinerU 产物放到 `40-new\parse\<入库夹名>\` 再跑 `ingest-build.ps1 -Book "<入库夹名>"`；标题失败按 §16 第 7 条的硬伤类型补标题后重跑，**不许手改 20-md 正文**）。
+   `ingest.ps1`（v3.3）内部已串好整条链：MinerU 解析（产物永久留在 `40-scratch\parse\<入库夹名>\`）→ 图名归一（`figures.py --dedupe --apply`）→ 图链自检（`check-links.ps1 -Fix`）→ **带页码锚点重建正文（`ingest-build.ps1`，v3.16 起六步：重建→图名→prune→图链→标题体检→打印八行验收表）** → 重建索引（`catalog.ps1`）。
+   - 必须看到三样：`验收通过`、`标题体检：OK`（等价 `TITLE-CHECK OK`）、`SELFCHECK refs=N ok=N unresolved=0`。任何一行 `bad` 或标题体检 `FAIL` → 停，按 `rules.md` §16 修（缺解析产物就把 MinerU 产物放到 `40-scratch\parse\<入库夹名>\` 再跑 `ingest-build.ps1 -Book "<入库夹名>"`；标题失败按 §16 第 7 条的硬伤类型补标题后重跑，**不许手改 20-md 正文**）。
    - 只有我明确说"先预览"时，才先跑 `-Preview`（不动文件），把书名、分类、文件数、正文路径念给我，等我说"执行"；否则不等待，直接写盘。
    - `-Preview` 也会跑一遍 MinerU，很耗时，默认跳过，避免重复解析。
 5. 用正文版权页/CIP 核对书名、版次、年份（`rules.md` §2），不符就改名：入库夹、md 文件名、`10-source` 目录、frontmatter 的 `title/edition/year/src` 四处同步，`missing` 字段改成剩余缺项（补全则空串），改完重跑 `catalog.ps1`。
@@ -47,7 +47,7 @@
 7. **覆盖率门（不通过不许往下走）**：`python 90-tool\scripts\coverage.py -Book "<入库夹名>" --strict`。
    - 退出码非 0：按打印的 UNCOVERED 小节逐节读 md、成页，回到第 6 步；直到 `uncovered=0`。
    - 判据是「每个 `###` 小节都至少被 wiki 页引用一次」的**底线**（防整节漏读）；不再要求一节一页，页数不设上限。
-8. 图索引：`python 90-tool\scripts\figure-index.py -Book "<入库夹名>"`，核对表体行数 = 20-md 内 `](图片/...)` 链接数；整页/无题图在 sources 页声明「无题非缺图」，有题无图写进 sources「已知缺陷」并指向 `40-new\figures-report-*.json`。
+8. 图索引：`python 90-tool\scripts\figure-index.py -Book "<入库夹名>"`，核对表体行数 = 20-md 内 `](图片/...)` 链接数；整页/无题图在 sources 页声明「无题非缺图」，有题无图写进 sources「已知缺陷」并指向 `40-scratch\figures-report-*.json`。
 9. `powershell -NoProfile -ExecutionPolicy Bypass -File "90-tool\scripts\wiki-index.ps1"`（页面 >120 行会自动分册）→ `wiki-lint.ps1` 十项全绿（死链/孤儿/无来源/超长/同义/过期/index 漂移/图无转述/别名遮蔽/question；超长项不查 index 文件），有问题就改到 0。
 10. `git add -A; git commit -m "wiki(ingest): <书名> touch=N"`（N = 新增+改动页数）。
 11. 打开 `30-wiki\todo.md`，把新增待办逐条念给我；有未闭合项就写进 `30-wiki\openq\`。
@@ -62,11 +62,11 @@
 
 ## 新建位置（强制）
 
-除 `rules.md` 明确规定的入库产物路径（`10-source\`、`20-md\`、`30-wiki\`）与解析产物路径（`40-new\parse\`）之外：
+除 `rules.md` 明确规定的入库产物路径（`10-source\`、`20-md\`、`30-wiki\`）与解析产物路径（`40-scratch\parse\`）之外：
 
-- 要新建**文件夹或文件** → 一律建在 `D:\Shervon_KnowledgeBase\40-new\` 里面（日志、脚本、笔记、临时目录都放这）。
+- 要新建**文件夹或文件** → 一律建在 `D:\Shervon_KnowledgeBase\40-scratch\` 里面（日志、脚本、笔记、临时目录都放这）。
 
-不许直接往知识库根目录放东西，也不许在 `40-new` 之外另开新目录。
+不许直接往知识库根目录放东西，也不许在 `40-scratch` 之外另开新目录。
 
 任何一步失败，立刻停，报三件事：卡在哪、为什么、两条可选路线及各自代价，让我选。
 
@@ -81,4 +81,4 @@
 - 成功入库后 `00-inbox` 里那一份会被脚本移走并清空（原件进 `10-source`）。
 - 插图统一进 `20-md\<入库夹>\图片\`，md 链接写 `图片/...`。
 - 一本书有多个分册时，全部丢进同一个文件夹即可，正文按文件名顺序合并。
-- MinerU 产物（含 `middle_json.json`）从 v3.3 起永久保留在 `40-new\parse\<入库夹名>\`，重建正文靠它；不要手动删。
+- MinerU 产物（含 `middle_json.json`）从 v3.3 起永久保留在 `40-scratch\parse\<入库夹名>\`，重建正文靠它；不要手动删。

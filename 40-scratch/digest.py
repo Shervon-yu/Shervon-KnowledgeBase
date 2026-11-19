@@ -20,5 +20,5 @@ while i < len(L):
                 n += 1
             j += 1
     i += 1
-io.open('40-new/outline-digest.txt', 'w', encoding='utf-8').write('\n'.join(out))
+io.open('40-scratch/outline-digest.txt', 'w', encoding='utf-8').write('\n'.join(out))
 print('lines', len(out))

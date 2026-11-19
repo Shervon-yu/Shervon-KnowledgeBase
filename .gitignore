@@ -9,7 +9,7 @@
 # Python 缓存
 __pycache__/
 # MinerU 解析产物（zip 可达 100MB+，按 rules v3.3 只在磁盘保留）
-40-new/parse/
+40-scratch/parse/
 # 一次性草稿与临时目录
-40-new/_acl/
+40-scratch/_acl/
 .obsidian/

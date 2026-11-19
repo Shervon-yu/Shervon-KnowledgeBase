@@ -42,4 +42,4 @@ print('--- uncovered ---')
 for s in h3:
     if not s['covered']:
         print('%s | L%d-%d | p%d | tab=%d img=%d chars=%d' % (s['title'], s['start'], s['end'], (s['start']), s['tables'], s['images'], s['chars']))
-json.dump([{k: v for k, v in s.items()} for s in h3], io.open(os.path.join(ROOT, '40-new', 'coverage.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+json.dump([{k: v for k, v in s.items()} for s in h3], io.open(os.path.join(ROOT, '40-scratch', 'coverage.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)

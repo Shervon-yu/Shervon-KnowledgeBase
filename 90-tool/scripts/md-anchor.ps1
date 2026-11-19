@@ -2,7 +2,7 @@
 param(
   [Parameter(Mandatory=$true)][string]$Md,
   [string]$Section = '',
-  [string]$OutDir = 'D:\Shervon_KnowledgeBase\40-new'
+  [string]$OutDir = 'D:\Shervon_KnowledgeBase\40-scratch'
 )
 $ErrorActionPreference = 'Stop'
 if(-not (Test-Path -LiteralPath $Md)){ throw "找不到 md：$Md" }

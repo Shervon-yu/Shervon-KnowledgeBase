@@ -28,7 +28,7 @@ $ErrorActionPreference = 'Stop'
 $ToolDir  = Split-Path -Parent $PSScriptRoot
 $Root     = Split-Path -Parent $ToolDir
 $Inbox    = Join-Path $Root '00-inbox'
-$LockFile = Join-Path $Root '40-new\.ingest.lock'
+$LockFile = Join-Path $Root '40-scratch\.ingest.lock'
 if (-not $Preview) {
     if (Test-Path -LiteralPath $LockFile) {
         Write-Host "已有入库任务在跑（$LockFile），本次退出。" -ForegroundColor Red
@@ -40,7 +40,7 @@ $SrcRoot  = Join-Path $Root '10-source'
 $MdRoot   = Join-Path $Root '20-md'
 $Idx      = Join-Path $Root '30-wiki'
 $Quar     = Join-Path $MdRoot '_quarantine'
-$NewRoot  = Join-Path $Root '40-new'
+$NewRoot  = Join-Path $Root '40-scratch'
 $Manifest = Join-Path $Idx 'manifest.csv'
 $Issues   = Join-Path $Idx 'issues.log'
 $Pending  = Join-Path $Idx 'pending.json'

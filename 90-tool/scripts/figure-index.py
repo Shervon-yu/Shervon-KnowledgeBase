@@ -29,7 +29,7 @@ out = [f'# 图索引：{book}', '',
        f'- 有题图：{sum(1 for r in rows if r[4] == "有题")}',
        f'- 无题图（含整页图）：{sum(1 for r in rows if r[4] == "无题")}',
        f'- 整页图：{sum(1 for r in rows if r[3] == "整页")}',
-       '- 说明：无题图是 OCR 未识别到图题（多为整页扫描图或子图拆散），非缺图；缺图清单见 40-new/figures-report-*.json',
+       '- 说明：无题图是 OCR 未识别到图题（多为整页扫描图或子图拆散），非缺图；缺图清单见 40-scratch/figures-report-*.json',
        '',
        '| 行号 | 图名 | 所在节 | 类型 | 题注 |',
        '|---|---|---|---|---|']

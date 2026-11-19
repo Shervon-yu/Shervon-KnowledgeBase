@@ -2,7 +2,7 @@
 """把本书三页的 #L 引用从 20160 行版平移到 20166 行版（仅这三页，避免误伤其他书的引用）。"""
 import io, json, re
 
-mapping = {int(k): v for k, v in json.load(io.open('40-new/line-map-20160-to-20166.json', encoding='utf-8')).items()}
+mapping = {int(k): v for k, v in json.load(io.open('40-scratch/line-map-20160-to-20166.json', encoding='utf-8')).items()}
 files = [
     r'50-wiki\concepts\混合设备-分类与选型.md',
     r'50-wiki\concepts\磁力传动搅拌设备.md',

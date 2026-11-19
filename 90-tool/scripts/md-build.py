@@ -8,14 +8,14 @@ r"""md-build.py —— 从 MinerU middle_json 按页序重建 20-md（页码锚�
   python md-build.py verify <入库夹名|md 路径>    # v3.16 标题体检：粗体假标题/漏章/孤立层级
 
 入库夹名 = 20-md 下的文件夹名（= md 文件名去掉 .md）。
-zip 查找顺序：--zipdir → 40-new\parse\<入库夹名> → %TEMP%\mk-full\<入库夹名>。
+zip 查找顺序：--zipdir → 40-scratch\parse\<入库夹名> → %TEMP%\mk-full\<入库夹名>。
 """
 import zipfile, os, json, io, re, sys, html, collections, glob, tempfile, shutil, unicodedata
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))          # D:\Shervon_KnowledgeBase
 MDROOT = os.path.join(ROOT, "20-md")
-SRC = os.path.join(ROOT, "40-new", "parse")
+SRC = os.path.join(ROOT, "40-scratch", "parse")
 
 BOOKS = {}
 _ZIP_OVERRIDE = None
@@ -516,7 +516,7 @@ def _build_book(key, mode):
 
 
 def _prune(key):
-    """把 md 里没有引用的图片移到 40-new\\_acl\\orphan-images\\<入库夹名>\\（可回滚，不删）。"""
+    """把 md 里没有引用的图片移到 40-scratch\\_acl\\orphan-images\\<入库夹名>\\（可回滚，不删）。"""
     b = _resolve(key)
     md = os.path.join(b["outdir"], b["name"])
     s = io.open(md, encoding="utf-8").read()
@@ -528,7 +528,7 @@ def _prune(key):
     if not orph:
         print("未引用图片：0")
         return 0
-    dest = os.path.join(ROOT, "40-new", "_acl", "orphan-images", key)
+    dest = os.path.join(ROOT, "40-scratch", "_acl", "orphan-images", key)
     os.makedirs(dest, exist_ok=True)
     for f in orph:
         shutil.move(os.path.join(imgdir, f), os.path.join(dest, f))

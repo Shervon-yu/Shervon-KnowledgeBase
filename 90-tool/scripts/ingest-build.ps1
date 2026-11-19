@@ -7,7 +7,7 @@
 # 做的事（对应 rules.md §16）：
 #   1) md-build.py write <入库夹名>   —— 按页序重建 md：<!-- page: N --> 锚点、$$ 公式、pipe 表格、图链与图题、保留 frontmatter
 #   2) fig-names.py apply <入库夹名>   —— 无图题图定名：方形小图判二维码、其余挂同页图题
-#   3) md-build.py prune            —— 把 md 未引用的历史图移到 40-new\_acl\orphan-images（可回滚，不删）
+#   3) md-build.py prune            —— 把 md 未引用的历史图移到 40-scratch\_acl\orphan-images（可回滚，不删）
 #   4) check-links.ps1               —— 图链自检必须 unresolved=0
 #   5) md-build.py verify            —— 标题体检：粗体假标题 / 整族标题没生成 / 漏章漏附录 / 孤立层级
 #   6) 验收打印                      —— 锚点数 / 公式数 / 表格数 / 图链数 / frontmatter / 标题体检
@@ -56,7 +56,7 @@ Write-Host "== 2/6 图名定名"
 & $py (Join-Path $scripts 'fig-names.py') apply $Book
 if ($LASTEXITCODE -ne 0) { throw "fig-names 失败（exit $LASTEXITCODE）" }
 
-Write-Host "== 3/6 归档未引用图片（移到 40-new\_acl\orphan-images）"
+Write-Host "== 3/6 归档未引用图片（移到 40-scratch\_acl\orphan-images）"
 & $py (Join-Path $scripts 'md-build.py') prune $Book
 if ($LASTEXITCODE -ne 0) { throw "prune 失败（exit $LASTEXITCODE）" }
 
