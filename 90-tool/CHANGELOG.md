@@ -33,7 +33,7 @@
 
 ## v3.15 — 2026-11-19（concepts → pages，六目录收为五目录）
 
-- `30-wiki\concepts\` 改名为 `30-wiki\pages\`（484 页整体 `git mv`，[[wikilink]] 按文件名解析，不断链）。理由：v3.14 把 `howto\` 重定义为「项目复盘」后，`concepts\` 事实上成了书内知识的唯一承载目录（488 页里 484 页），内含设备结构、测量方法、设计步骤、放大实例与 `*-总览` 导航页，按 §12.2 字面定义（「机理性知识」）已名不副实；改叫 `pages`（知识页）与内容一致。
+- `30-wiki\concepts\` 改名为 `30-wiki\pages\`（484 页整体 `git mv`，`[[wikilink]]` 按文件名解析，不断链）。理由：v3.14 把 `howto\` 重定义为「项目复盘」后，`concepts\` 事实上成了书内知识的唯一承载目录（488 页里 484 页），内含设备结构、测量方法、设计步骤、放大实例与 `*-总览` 导航页，按 §12.2 字面定义（「机理性知识」）已名不副实；改叫 `pages`（知识页）与内容一致。
 - 六个类型值不动：`concept` / `entity` / `source` / `comparison` / `howto` / `openq`；空目录 `entities\` 并入 `pages\`，一致性规则改为「除 `concept`、`entity` 同放 `pages\` 外，其余必须与所在目录一致」。
 - `rules.md` §12 六目录改五目录、§12.2 标题与职责、§12.1 总览页路径、§13 type 一致性、§15 ingest 查重路径、howto 条「书里的东西由 pages 承担」共 6 处。
 - `AGENTS.wiki.md` v1.0 → v1.1：6 处 `concepts\` 改 `pages\`，§3 type 一致性同步，版本行注明理由。
@@ -53,7 +53,7 @@
 ## v3.13 — 2026-11-19（目录合并：30-index + 50-wiki → 30-wiki）
 
 - 原 `30-index`（机器生成物：catalog.md、manifest.csv、todo.md、issues.log、figures-*.md）与原 `50-wiki`（六子目录 + index + log + glossary + _lint）合并为单一 `30-wiki`；`30-index` 目录消失。
-- 删除四个过期 `30-index\派生页-<书名>.md`：引用的是已删旧 119 页页名（如 [[搅拌功率关联式对比]]、[[传热-总传热系数]]），功能由 `30-wiki\sources\<书名>.md` 与 `30-wiki\index-<领域>.md` 覆盖。
+- 删除四个过期 `30-index\派生页-<书名>.md`：引用的是已删旧 119 页页名（如 `[[搅拌功率关联式对比]]`、`[[传热-总传热系数]]`），功能由 `30-wiki\sources\<书名>.md` 与 `30-wiki\index-<领域>.md` 覆盖。
 - 路径改 30-wiki：`wiki-index.ps1`、`wiki-lint.ps1`（$WikiDir）、`catalog.ps1`、`ingest.ps1`（$Idx）、`coverage.py`、`refs-remap.py`、`figure-index.py`；文档 `AGENTS.wiki.md`、`prompt-dsh.md`、`prompt.md`、`README.md`；配置 `.gitignore`、`.obsidian\app.json`（移除 "30-index/" 忽略项）。
 - `rules.md` §12 改写写者边界：分「机器区」（脚本写，人不手改）与「人写区」（六子目录 + glossary + log，只有 LLM 写）；同时修复 v3.10 写入时损坏的版本历史段（第 10 行字面 `n-`、第 27~33 行混入 PowerShell 片段）与本文件 v3.11 行的乱码前缀。
 - 触发：2026-11-19 15:16 用户要求「把现在的 30-index、50wiki 改成 30-wiki，合并两个文件夹里的文件，同功能合并、冗余删除」，15:17 补充「配套修改 90-tool」。

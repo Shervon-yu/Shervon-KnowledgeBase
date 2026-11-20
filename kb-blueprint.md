@@ -842,7 +842,7 @@ git push -u origin main
 
 | | LLM Wiki | GraphRAG |
 |:---|:---|:---|
-| 知识形态 | **人可读的页面网**（[[链接]]） | 机器图（节点+边+社区报告） |
+| 知识形态 | **人可读的页面网**（`[[链接]]`） | 机器图（节点+边+社区报告） |
 | 综合单位 | 概念页（一页一个主题） | 社区报告（一团一个话题） |
 | 出处锚点 | 逐句可落 §节号/行号 | 稀释 |
 | 维护成本 | 低（每次 ingest 改 10~15 页） | 高（全量重建/增量难） |
@@ -1198,7 +1198,7 @@ status: active|draft|stale|superseded ｜ confidence: high|medium|low ｜ supers
 | frontmatter | — | 文件头元数据 | md 开头 `---` 包住的字段块（type/title/sources…），机器可解析 |
 | gist | GitHub Gist | — | GitHub 的单文件分享页；Karpathy 和 v2 的"论文"都发在这，**不是仓库** |
 | git | — | — | 版本控制工具：记录每次改动、可回滚到任意历史 |
-| graph view | — | 星图 | Obsidian 把 [[链接]] 画成节点连线图 |
+| graph view | — | 星图 | Obsidian 把 `[[链接]]` 画成节点连线图 |
 | ingest | — | 入库编译 | 读新资料→写页→更新 10~15 页→更新 index/log（§1.5） |
 | JSON Schema | — | JSON 校验规范 | 声明"字段该长什么样"，机器据此验 frontmatter（geronimo 的杀招） |
 | Leiden | — | 莱顿算法 | 社区检测算法（Traag et al. 2019），GraphRAG 用它切社区 |
