@@ -1,4 +1,4 @@
-#requires -Version 5.1
+﻿#requires -Version 5.1
 <#
   ingest.ps1  —  知识库入库主脚本 v2.0（规则见 ..\rules.md）
 

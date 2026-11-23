@@ -365,6 +365,79 @@ def _fix_part_heads(lines):
     return lines
 
 
+def _fix_std_covers(lines):
+    """v3.20 HG/T 20592~20635 式合订本结构修补：
+
+    合订本 = 全书目录/目次/前言 + 若干个分标准（各带封面、`## 目 次`、裸编号
+    「1 范围…」章节、附录）+ 编制说明（「第N章」族，可能前后重复印刷）。
+    每个分标准注入 `# HG/T 2xxxx—2009 名称` h1（分标准清单取自全书目录表
+    `| 71 | HG/T 20592-2009 | 钢制管法兰(PN系列) | …` 连续行），
+    使 _demote_bare_numbered 按分标准重启裸编号；编制说明区注入 `# 编制说明`。
+    """
+    # 0) build() 里表格是多行字符串单元素（html_table_to_md），先扁平化（保留空行元素）
+    lines = [sub for l in lines for sub in (l.splitlines() or [""])]
+    # 1) 分标准表（只取第一段连续表格行，避免末页重复印刷的第二份）
+    stds, in_tbl = [], False
+    for l in lines:
+        m = re.match(r"^\|\s*\d{1,3}\s*\|\s*(HG/T\s*\d{4,5}[—–\-]\d{4})\s*\|\s*([^|]+?)\s*\|", l)
+        if m:
+            in_tbl = True
+            code = m.group(1).strip()
+            code = re.sub(r"[—–\-]\d{4}$", lambda mm: "—" + mm.group(0)[-4:], code)
+            stds.append((code, m.group(2).strip()))
+        elif in_tbl:
+            break
+    if not stds:
+        return lines
+
+    # 2) 分标准目次索引；跳过全书级目次（其列表项是「- HG/T ……… (页码)」）
+    sub_toc = []
+    for i, l in enumerate(lines):
+        if not re.match(r"^##\s*目\s*次\s*$", l):
+            continue
+        look = [x.strip() for x in lines[i + 1:i + 16] if x.strip()]
+        if any(re.match(r"^- HG/T.*[.…]{2,}\s*\(\d+\)\s*$", x) for x in look):
+            continue
+        sub_toc.append(i)
+    if len(sub_toc) != len(stds):
+        print("  [合订本修补] 分标准表 %d 个 ≠ 目次 %d 个，跳过 h1 注入"
+              % (len(stds), len(sub_toc)))
+        return lines
+
+    # 3) 注入 h1（倒序防下标漂移）+ 编制说明 h1（首个第N章、末目次之后首个第N章）
+    injections = [(i, "# %s %s" % (c, n)) for (c, n), i in zip(stds, sub_toc)]
+    chap_idx = [i for i, l in enumerate(lines)
+                if re.match(r"^##\s*第[一二三四五六七八九十百零\d]+\s*[章篇]", l)]
+    bian_ins = 0
+    if chap_idx:
+        injections.append((chap_idx[0], "# 编制说明"))
+        tail = [i for i in chap_idx if i > sub_toc[-1]]
+        if tail:
+            injections.append((tail[0], "# 编制说明"))
+        bian_ins = 1 + (1 if tail else 0)
+    for i, t in sorted(injections, key=lambda x: -x[0]):
+        lines[i:i] = [t, ""]
+
+    # 4) 分标准内编号回跳的伪章标题（图例/列表行被误升，如「2 标记示例:」「1 外观和尺寸检查。」）
+    #    降为 ###，避免 _demote_bare_numbered 因一个坏行把整个分标准的章序列降回粗体
+    last = 0
+    for i, l in enumerate(lines):
+        if l.startswith("# "):
+            last = 0
+        elif l.startswith("## "):
+            m = BARE_NUM_RE.match(l[3:])
+            if m:
+                n = int(m.group(1))
+                if n <= last:
+                    lines[i] = "### " + l[3:]
+                else:
+                    last = n
+
+    print("  [合订本修补] 注入分标准 h1 %d 处 + 编制说明 h1 %d 处"
+          % (len(sub_toc), bian_ins))
+    return lines
+
+
 def _demote_bare_numbered(lines):
     """v3.16 守卫：裸数字 h2（GB 式「1 范围」）误判后成批降回粗体。
 
@@ -590,6 +663,7 @@ def build(book, mode):
 
     lines = _inject_missing_chapters(lines)
     lines = _fix_part_heads(lines)
+    lines = _fix_std_covers(lines)
     lines = _demote_bare_numbered(lines)
 
     text = "\n".join(lines)
