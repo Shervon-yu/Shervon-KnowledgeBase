@@ -1,4 +1,4 @@
-﻿#requires -Version 5.1
+#requires -Version 5.1
 <#
   ingest.ps1  —  知识库入库主脚本 v2.0（规则见 ..\rules.md）
 
@@ -289,7 +289,7 @@ function Get-Quality([string]$text) {
 
 function Get-KindName([string]$hay) {
     if ($hay -match '\.html?$|网页|抓取') { return 'web' }
-    if ($hay -match '标准|规范|GB|JB|ISO|DIN|ASTM') { return 'standard' }
+    if ($hay -match '标准|规范|GB|JB|ISO|DIN|ASTM|NB|HG') { return 'standard' }
     if ($hay -match '论文|paper|DOI|学位|期刊') { return 'paper' }
     if ($hay -match '项目|计算书|图纸|报价|方案') { return 'project' }
     return 'book'

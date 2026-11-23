@@ -150,7 +150,9 @@ def title_level(txt):
     否则成批降回粗体。
     """
     s = txt.strip()
-    if re.match(r"^第\s*[一二三四五六七八九十百零\d]+\s*部分", s):
+    # v3.19：NB/T 47065 分册标题带书名前缀（容器支座 第1部分:鞍式支座），
+    # 「第」与编号间空格有无不定（第 4 部分 / 第5部分）。
+    if re.match(r"^(?:容器支座\s*)?第\s*[一二三四五六七八九十百零\d]+\s*部分", s):
         return 1
     if re.match(r"^第\s*[一二三四五六七八九十百零\d]+\s*[章篇]", s):
         return 2
@@ -162,7 +164,13 @@ def title_level(txt):
         return 3
     if BARE_NUM_RE.match(s) and len(s) <= 30:
         return 2
-    if re.match(r"^(附录|参考文献|前\s*言|序\s*[言一]?|目\s*录|编后记|致\s*谢|内容提要|符号表)", s):
+    # v3.19：裸编号+大写字母的编制说明条目（4 A型支座的本体允许载荷 / 5 B型…[Q]）
+    if re.match(r"^\d{1,2}\s+[A-Z]", s) and len(s) <= 30:
+        return 2
+    # v3.19：分册编制说明标题（NB/T 47065.4—2018《容器支座 第4部分:支承式支座》 编制说明）
+    if re.match(r"^(?:NB/T|GB/T|GB|JB/T|JB|HG/T|HG|SH/T|DL/T|SY/T)\s*[\d.]+\s*[—–-]\s*\d{4}\s*《[^》]*》\s*编制说明\s*$", s):
+        return 2
+    if re.match(r"^(附录|参考文献|前\s*言|序\s*[言一]?|目\s*[录次]|编后记|致\s*谢|内容提要|符号表)", s):
         return 2
     return 0
 
@@ -217,6 +225,143 @@ def _inject_missing_chapters(lines):
         i = sec_idx[k]
         lines[i:i] = ["## %s %s" % (name, title), ""]
         print("  [补章标题] %s %s -> 第 %d 行前" % (name, title, i + 1))
+    return lines
+
+
+def _fix_part_heads(lines):
+    """v3.19 NB/T 47065 分册结构修补（MinerU 直出标题残损）：
+
+    1) 附录标题丢成 text 块（裸「附录A」/「附录 B」或粗体「**附录A**」）→ `## 附录X`；
+    2) 分册内目录有、md 缺的附录标题，在分册内第一个 `X.N` 内容行前补 `## 附录X`；
+       孤儿「（资料性附录）」行按其后 ≤15 行的图/表/式编号推定字母并在其前补标题；
+    3) 编制说明条目：同分册内裸编号「重启」（第二个 `## 1 …`）视为编制说明区，
+       区内裸编号 `## N …` 降 `### `；若区内无「…《…》 编制说明」标题，按全书目录补一个。
+    """
+    STD = r"(?:NB/T|GB/T|GB|JB/T|JB|HG/T|HG|SH/T|DL/T|SY/T)"
+
+    def _ltr(c):
+        o = ord(c)
+        if 0xFF21 <= o <= 0xFF5A:          # Ａ-Ｚ／ａ-ｚ 全角
+            return chr(o - 0xFEE0)
+        return c.upper()
+
+    def _norm_head(x):
+        t = x.strip()
+        if t.startswith("## "):
+            t = t[3:].strip()
+        return t.strip("*").strip()
+
+    # 1) 附录标题裸文本/粗体行 → ## 附录X（原地改，行数不变）
+    for i, l in enumerate(lines):
+        s = l.strip()
+        if not s or s.startswith("#") or s.startswith("- ") or s.startswith("|"):
+            continue
+        m = re.match(r"^\*\*(附录\s*[A-Za-zＡ-Ｚａ-ｚ])\*\*\s*$", s)
+        if m:
+            lines[i] = "## 附录" + _ltr(m.group(1)[-1])
+        else:
+            m = re.match(r"^附录\s*([A-Za-zＡ-Ｚａ-ｚ])\s*$", s)
+            if m:
+                lines[i] = "## 附录" + _ltr(m.group(1))
+
+    # 2) 分册 span 与各分册已有附录标题
+    #    只认真正的 h1 分册标题；编制说明标题含「《…第4部分…》」字样但以 ## 开头，必须排除
+    part_idx = [i for i, l in enumerate(lines) if re.match(r"^#\s+(?:容器支座\s*)?第\s*\d+\s*部分", l)]
+    spans = []
+    for k, st in enumerate(part_idx):
+        end = part_idx[k + 1] if k + 1 < len(part_idx) else len(lines)
+        m = re.search(r"第\s*(\d+)\s*部分", lines[st])
+        spans.append((st, end, int(m.group(1))))
+
+    def _have_app(st, end):
+        out = set()
+        for j in range(st, end):
+            m = re.match(r"^##\s*附录([A-Za-zＡ-Ｚａ-ｚ])", lines[j])
+            if m:
+                out.add(_ltr(m.group(1)))
+        return out
+
+    injections = []   # (原行号, 插入文本)
+
+    # 3a) 孤儿「（资料性附录）」行 → 向后找字母，前补标题
+    for st, end, pn in spans:
+        have = _have_app(st, end)
+        for i in range(st, end):
+            if lines[i].strip() != "（资料性附录）":
+                continue
+            j = i - 1
+            while j >= st and (not lines[j].strip() or lines[j].lstrip().startswith("<!--")):
+                j -= 1
+            if j >= st and lines[j].strip().startswith("## ") and "附录" in lines[j]:
+                continue                      # 正常附录标题的第二行
+            letter = None
+            for k in range(i + 1, min(i + 16, end)):
+                m = re.search(r"[（(]\s*([A-E])\s*\.\s*\d+", lines[k]) \
+                    or re.search(r"(?:图|表|式)\s*([A-E])\s*\.\s*\d+", lines[k])
+                if m:
+                    letter = m.group(1)
+                    break
+            if letter and letter not in have:
+                injections.append((i, "## 附录" + letter))
+                have.add(letter)
+
+    # 3b) 分册内第一个 X.N 内容行前补标题（先预扫全分册防重复注入）
+    for st, end, pn in spans:
+        have = _have_app(st, end)
+        seen = set()
+        for i in range(st, end):
+            m = re.match(r"^([A-E])\.\d+", lines[i]) or re.match(r"^\*\*([A-E])\.\d+", lines[i])
+            if not m or m.group(1) in have or m.group(1) in seen:
+                continue
+            seen.add(m.group(1))
+            injections.append((i, "## 附录" + m.group(1)))
+
+    # 3c) 编制说明区：目录建 {分册号: 标题}，重启降 h3、缺题补题
+    bian = {}
+    for l in lines:
+        m = re.match(
+            r"^-\s*(" + STD + r"\s*[\d.]+\s*[—–-]\s*\d{4}\s*《[^》]*第\s*(\d+)\s*部分[^》]*》\s*编制说明)"
+            r"\s*[.…]{2,}\s*\d+\s*$", l)
+        if m:
+            bian[int(m.group(2))] = m.group(1)
+    demote = []
+    NUM2_RE = re.compile(r"^(\d{1,2})\s+[\u4e00-\u9fffA-Z]")   # 编制说明条目允许「4 A型…」式
+    for st, end, pn in spans:
+        seen_one = zone = False
+        prev_h2 = None
+        for i in range(st, end):
+            l = lines[i]
+            if l.startswith("## "):
+                m = NUM2_RE.match(l[3:])
+                if m and int(m.group(1)) == 1:
+                    if not seen_one:
+                        seen_one = True
+                    elif not zone:
+                        zone = True
+                        demote.append(i)
+                        if prev_h2 and not prev_h2.rstrip().endswith("编制说明") and pn in bian:
+                            head = bian[pn]
+                            if not any(_norm_head(x) == head for x in lines[st:end]):
+                                injections.append((i, "## " + head))
+                    else:
+                        demote.append(i)
+                elif m and zone:
+                    demote.append(i)
+                prev_h2 = l
+            elif l.startswith("# "):
+                zone = False
+
+    # 注入按下标降序（每个注入插 2 行），再换算 demote 下标
+    for i, t in sorted(injections, key=lambda x: -x[0]):
+        lines[i:i] = [t, ""]
+    for d in demote:
+        nd = d + 2 * sum(1 for idx, _ in injections if idx <= d)
+        if lines[nd].startswith("## "):
+            lines[nd] = "###" + lines[nd][2:]
+    if injections:
+        print("  [分册修补] 补附录/编制说明标题 %d 处" % len(injections))
+    if demote:
+        print("  [分册修补] 编制说明条目降 h3 %d 处" % len(demote))
     return lines
 
 
@@ -444,6 +589,7 @@ def build(book, mode):
                     lines.append("")
 
     lines = _inject_missing_chapters(lines)
+    lines = _fix_part_heads(lines)
     lines = _demote_bare_numbered(lines)
 
     text = "\n".join(lines)
