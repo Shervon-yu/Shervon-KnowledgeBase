@@ -624,7 +624,7 @@ def build(book, mode):
                     base = "整页图-p%d_%d" % (pno, stats["image"])
                     stats["img_nocap"] += 1
                 plan_imgs.append((body, base))
-                lines.append("![](图片/%s.jpg)" % base)
+                lines.append("![](%s---图片/%s.jpg)" % (cfg["name"][:-3], base))
                 lines.append("")
                 if cap:
                     lines.append(cap)
@@ -676,7 +676,7 @@ def build(book, mode):
         print("  preview -> %%TEMP%%\\preview-%s.md" % book)
         return
 
-    mdpath = os.path.join(cfg["outdir"], cfg["name"])
+    mdpath = os.path.join(MDROOT, cfg["name"])
     # 保留既有 YAML frontmatter（重建正文不重写元数据；catalog.ps1 依赖它）
     fm = ""
     if os.path.exists(mdpath):
@@ -685,7 +685,7 @@ def build(book, mode):
             end = old_txt.find("\n---", 3)
             if end > 0:
                 fm = old_txt[: end + 4].rstrip("\n") + "\n\n"
-    imgdir = os.path.join(cfg["outdir"], "图片")
+    imgdir = os.path.join(MDROOT, cfg["name"][:-3] + "---图片")
     if not os.path.isdir(imgdir):
         os.makedirs(imgdir)
     io.open(mdpath, "w", encoding="utf-8", newline="\n").write(fm + text)
@@ -704,12 +704,11 @@ def _resolve(key):
     """按入库夹名解析 outdir / md 名 / zip 目录，并登记到 BOOKS。"""
     if key in BOOKS:
         return BOOKS[key]
-    outdir = _OUT_OVERRIDE or os.path.join(MDROOT, key)
-    if not os.path.isdir(outdir):
-        raise SystemExit("找不到入库夹：%s" % outdir)
-    mds = [p for p in glob.glob(os.path.join(outdir, "*.md"))]
+    outdir = MDROOT
+    key_md = os.path.join(MDROOT, key + ".md")
+    mds = [key_md] if os.path.isfile(key_md) else glob.glob(os.path.join(MDROOT, key + "*.md"))
     if not mds:
-        raise SystemExit("入库夹里没有 .md：%s" % outdir)
+        raise SystemExit("20-md 根找不到 md：%s" % key)
     name = os.path.basename(mds[0])
     zipdir = _ZIP_OVERRIDE
     if not zipdir:
@@ -738,10 +737,10 @@ def _build_book(key, mode):
 def _prune(key):
     """把 md 里没有引用的图片移到 40-scratch\\_acl\\orphan-images\\<入库夹名>\\（可回滚，不删）。"""
     b = _resolve(key)
-    md = os.path.join(b["outdir"], b["name"])
+    md = os.path.join(MDROOT, b["name"])
     s = io.open(md, encoding="utf-8").read()
-    ref = set(re.findall(r"图片/([^)]+?\.jpg)", s))
-    imgdir = os.path.join(b["outdir"], "图片")
+    ref = set(re.findall(r"---图片/([^)]+?\.jpg)", s))
+    imgdir = os.path.join(MDROOT, b["name"][:-3] + "---图片")
     files = sorted(f for f in os.listdir(imgdir) if f.lower().endswith(".jpg"))
     orph = [f for f in files if f not in ref]
     print("  [prune] md=%s refs=%d files=%d orph=%d" % (b["name"], len(ref), len(files), len(orph)))
@@ -855,10 +854,10 @@ def _md_from_arg(arg):
     """入库夹名 / 夹内 md 路径 / 任意 md 路径 → md 绝对路径。"""
     if os.path.isfile(arg) and arg.lower().endswith(".md"):
         return os.path.abspath(arg)
-    p = os.path.join(MDROOT, arg, arg + ".md")
+    p = os.path.join(MDROOT, arg + ".md")
     if os.path.isfile(p):
         return p
-    pat = os.path.join(arg if os.path.isabs(arg) else os.path.join(MDROOT, arg), "*.md")
+    pat = os.path.join(MDROOT, arg + "*.md") if not os.path.isabs(arg) else os.path.join(arg, "*.md")
     cands = glob.glob(pat)
     if len(cands) == 1:
         return cands[0]

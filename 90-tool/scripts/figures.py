@@ -160,29 +160,33 @@ def main():
     args = ap.parse_args()
 
     book = os.path.abspath(args.book)
+    key = os.path.basename(book.rstrip('\\/'))
+    if key.endswith('---图片'):
+        key = key[:-len('---图片')]
+    mdroot = os.path.dirname(book)
     md_path = args.md
     if not md_path:
-        cand = os.path.join(book, os.path.basename(book.rstrip('\\/')) + '.md')
+        cand = os.path.join(mdroot, key + '.md')
         if not os.path.isfile(cand):
-            mds = [f for f in os.listdir(book) if f.lower().endswith('.md')]
+            mds = [f for f in os.listdir(mdroot) if f.lower().endswith('.md') and key in f]
             if len(mds) != 1:
                 print('ERROR: 找不到唯一 md：%s' % cand)
                 return 2
-            cand = os.path.join(book, mds[0])
+            cand = os.path.join(mdroot, mds[0])
         md_path = cand
 
     with open(md_path, encoding='utf-8') as fh:
         text = fh.read()
 
-    img_dir = os.path.join(book, '图片')
+    img_dir = book if os.path.isdir(book) else os.path.join(mdroot, key + '---图片')
     if not os.path.isdir(img_dir):
-        img_dir = book
+        img_dir = mdroot
 
     def link(name):
-        return ('图片/' + name) if img_dir != book else name
+        return (key + '---图片/' + name) if img_dir == os.path.join(mdroot, key + '---图片') else name
 
     def relink(text, old, new):
-        for pre in ('图片/', ''):
+        for pre in (key + '---图片/', '图片/', ''):
             text = text.replace('](' + pre + old + ')', '](' + link(new) + ')')
             text = text.replace('src="' + pre + old + '"', 'src="' + link(new) + '"')
         return text
@@ -347,7 +351,10 @@ def main():
     scratch = os.path.join(root, '40-scratch') if root else book
     if not os.path.isdir(scratch):
         scratch = book
-    out = os.path.join(scratch, 'figures-report-' + os.path.basename(book) + '.json')
+    _bn = os.path.basename(book)
+    if _bn.endswith('---图片'):
+        _bn = _bn[:-len('---图片')]
+    out = os.path.join(scratch, 'gen', 'figures-report-' + _bn + '.json')
     with open(out, 'w', encoding='utf-8') as fh:
         json.dump(report, fh, ensure_ascii=False, indent=1)
     print('renamed=%d deduped=%d inserted=%d missing=%d unref=%d report=%s'

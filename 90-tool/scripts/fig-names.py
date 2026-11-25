@@ -23,9 +23,9 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 MDROOT = os.path.join(ROOT, "20-md")
 
-IMGCAP = re.compile(r"^!\[.*?\]\(图片/(图\s*\d{1,2}[-.．]\d{1,2}[^)]*\.jpg)\)")
-UNCAP = re.compile(r"^!\[.*?\]\(图片/((?:图_第|整页图-p)(\d+)页?_?\d*\.jpg)\)")
-UNCAP2 = re.compile(r"^!\[.*?\]\(图片/(图_第(\d+)页_(\d+)\.jpg)\)")
+IMGCAP = re.compile(r"^!\[.*?\]\([^)]*图片/(图\s*\d{1,2}[-.．]\d{1,2}[^)]*\.jpg)\)")
+UNCAP = re.compile(r"^!\[.*?\]\([^)]*图片/((?:图_第|整页图-p)(\d+)页?_?\d*\.jpg)\)")
+UNCAP2 = re.compile(r"^!\[.*?\]\([^)]*图片/(图_第(\d+)页_(\d+)\.jpg)\)")
 PAGE = re.compile(r"^<!-- page: (\d+) -->")
 TRY_PIL = True
 try:
@@ -53,12 +53,11 @@ def main():
     ap.add_argument("--maxdist", type=int, default=25)
     a = ap.parse_args()
 
-    folder = os.path.join(MDROOT, a.book)
-    mds = glob.glob(os.path.join(folder, "*.md"))
+    mds = glob.glob(os.path.join(MDROOT, a.book + ".md"))
     if not mds:
-        raise SystemExit("找不到 md：%s" % folder)
+        raise SystemExit("找不到 md：%s" % os.path.join(MDROOT, a.book + ".md"))
     path = mds[0]
-    imgdir = os.path.join(folder, "图片")
+    imgdir = os.path.join(MDROOT, a.book + "---图片")
     L = io.open(path, encoding="utf-8").read().split("\n")
 
     page_of, cp = [], "1"

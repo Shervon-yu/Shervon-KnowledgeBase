@@ -20,7 +20,7 @@ def main():
     a = ap.parse_args()
 
     book = a.Book
-    md = os.path.join(ROOT, '20-md', book, book + '.md')
+    md = os.path.join(ROOT, '20-md', book + '.md')
     if not os.path.exists(md):
         print('md 不存在：' + md)
         return 2
@@ -36,7 +36,7 @@ def main():
         s['end'] = secs[k + 1]['start'] - 1 if k + 1 < len(secs) else len(lines)
         body = '\n'.join(lines[s['start'] - 1:s['end']])
         s['tables'] = body.count('|---')
-        s['images'] = len(re.findall(r'!\[\]\(图片/', body))
+        s['images'] = len(re.findall(r'!\[[^\]]*\]\([^)]*图片/', body))
 
     cited = set()
     for f in glob.glob(os.path.join(ROOT, '30-wiki', '**', '*.md'), recursive=True):

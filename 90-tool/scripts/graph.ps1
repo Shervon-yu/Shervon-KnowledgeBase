@@ -4,7 +4,7 @@
 param(
   [string]$Domain = "",
   [string]$Format = "Mermaid",
-  [string]$OutFile = "D:\Shervon_KnowledgeBase\40-scratch\graph.md",
+  [string]$OutFile = "D:\Shervon_KnowledgeBase\40-scratch\gen\graph.md",
   [string]$WikiDir = "D:\Shervon_KnowledgeBase\30-wiki"
 )
 

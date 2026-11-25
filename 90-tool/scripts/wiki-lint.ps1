@@ -223,7 +223,7 @@ $drift = New-Object System.Collections.ArrayList
 if(Test-Path -LiteralPath $idxPath){
   # index.md 可能只是按 domain 分册的目录；把所有 index*.md 合起来判定漂移
   $idx = ''
-  foreach($f in (Get-ChildItem -LiteralPath $WikiDir -Filter 'index*.md' -File)){ $idx += [System.IO.File]::ReadAllText($f.FullName) + "`n" }
+  foreach($f in (Get-ChildItem -LiteralPath $WikiDir -Filter 'index*.md' -File -Recurse)){ $idx += [System.IO.File]::ReadAllText($f.FullName) + "`n" }
   foreach($k in $pages.Keys){
     if($idx -notmatch ('\[\[' + [regex]::Escape($k) + '\]\]')){ [void]$drift.Add("$k 不在 index.md") }
   }

@@ -28,8 +28,8 @@ $scripts = Split-Path -Parent $PSCommandPath
 $root = Split-Path -Parent (Split-Path -Parent $scripts)
 $py = 'C:\Users\shervon\.local\mineru\Scripts\python.exe'
 if (-not (Test-Path $py)) { $py = 'python' }
-$md = Join-Path $root "20-md\$Book\$Book.md"
-$img = Join-Path $root "20-md\$Book\图片"
+$md = Join-Path $root "20-md\$Book.md"
+$img = Join-Path $root "20-md\$Book---图片"
 
 if (-not (Test-Path $md)) { throw "找不到 md：$md（先用 ingest.ps1 解析并建夹）" }
 
@@ -75,7 +75,7 @@ $text = Get-Content -Raw -Encoding UTF8 $md
 $anchors = ([regex]::Matches($text, '(?m)^<!-- page: \d+ -->')).Count
 $eqs = ([regex]::Matches($text, '(?m)^\$\$ ')).Count
 $tables = ([regex]::Matches($text, '(?m)^\|.*\|$')).Count
-$links = ([regex]::Matches($text, '!\[\]\(图片/[^)]+\.jpg\)')).Count
+$links = ([regex]::Matches($text, '!\[[^\]]*\]\([^)]*图片/[^)]+\.jpg\)')).Count
 $imgs = (Get-ChildItem $img -File -ErrorAction SilentlyContinue).Count
 $hasFm = $text.StartsWith('---')
 $pageNames = ([regex]::Matches($text, '图_第\d+页_')).Count

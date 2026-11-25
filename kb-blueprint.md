@@ -2201,28 +2201,28 @@ golden set 从旧版 30 题扩到 **40 题、跨 3 个领域**（现有 5 本书
 | 5   | 只查询：装 DSH 就够（库索引现状见 §3.1.4）。加新书：还要 Python + MinerU + 2.0 GB 模型。                     |
 | 6   | 新文件只进 `40-scratch\`；`10-source\`、`20-md\` 不许手改。                                     |
 
-## 4.1 库里有什么（2026-11-23 实测）
+## 4.1 库里有什么（2026-11-25 实测）
 
 | 目录           | 放什么                          | 谁写                          | 人能不能手改         |
 | :----------- | :--------------------------- | :-------------------------- | :------------- |
 | `00-inbox\`  | 待入库的书，一本书一个文件夹               | 人投放                         | 可以，入库后清空       |
 | `10-source\` | 原件 PDF（只读存档）                 | 人放一次                        | 不改、不删          |
-| `20-md\`     | 解析出的正文 `.md` + 每本书的 `图片\`    | `ingest.ps1` / `figures.py` | 不改（要改走脚本）      |
-| `30-wiki\`   | 结论页（pages 560 / notes 0 / sources 7 / openq 3）、目录、待办（rules §12 机器区+人写区，两区两规） | 机器区脚本；人写区只有 LLM 写 | Obsidian 里只读   |
-| `40-scratch\`    | 报告、日志、脚本、临时目录                | 任何人                         | 可以，别当仓库        |
+| `20-md\`     | 正文 `.md` **平铺在根** + 每本书一个 `<书>---图片\` 图夹（2026-11-25 起不再建书目录） | `ingest.ps1` / `figures.py` | 不改（要改走脚本）      |
+| `30-wiki\`   | 结论页（pages 560 / notes 0 / sources 7 / openq 3）、目录分册（`index\`）、图索引（`figures\`）、待办（rules §12 机器区+人写区，两区两规） | 机器区脚本；人写区只有 LLM 写 | Obsidian 里只读   |
+| `40-scratch\`    | 草稿区（整目录已被 git 忽略）：`gen\` 生成物（graph.md / llms.txt / figures-report）、`desc\` 描述中间数据、`backup\` 历史快照、`legacy\` 一次性补丁脚本、`parse\` MinerU 原始 zip、`_acl\` 未引用图、`_tmp\` 临时 | 任何人 | 可以，别当仓库 |
 | `90-tool\`   | 规则、提示词、脚本                    | 人改规则                        | 改前看 `rules.md` |
 
-现状数字（2026-11-23 实测）：
+现状数字（2026-11-25 实测）：
 
 | 指标 | 数值 |
 |:---|:---|
-| 书 | 5 本：化工原理（王志魁 第5版）、气液搅拌釜 γ-CT（刘跃进/韩路长 2014）、搅拌与混合设备设计选用手册、混合原理与应用（永田进治 1984）、GB/T 150.1~150.4-2024 |
-| 正文 | 5 份 md，4,453,821 B（4.25 MB）、2,703,618 字符（约 90 万汉字） |
-| 图 | 1858 张、125,192,558 B（119.4 MB，`20-md\*\图片\`） |
+| 书 | 7 本：GB/T 150.1~150.4-2024 压力容器、HG/T 20592~20635-2009 钢制管法兰垫片紧固件、NB/T 47065.1~47065.5-2018 容器支座、化工原理（王志魁 第5版）、气液搅拌釜 γ-CT（刘跃进/韩路长 2014）、搅拌与混合设备设计选用手册（陈志平）、混合原理与应用（永田进治 1984） |
+| 正文 | 7 份 md（`20-md\*.md`），5,847,424 B（5.58 MB）、3,738,090 字符 |
+| 图 | 2095 张、131.8 MB，分装 7 个 `<书>---图片\` 夹 |
 | wiki | 570 个 md：pages 560 + sources 7 + openq 3（经验区 notes\ 0 页起步，howto 并入） |
-| 图链 | 五本全通：337 + 426 + 561 + 137 + 397，`unresolved=0` |
-| 体积 | 286.3 MB → 约 380 MB（原件 256.6 + 20-md 123.7 + 30-wiki 2.3） |
-| 版本 | git 8 次提交 + GitHub 私有仓库（§3.3 升级改动随本次提交） |
+| 图链 | 七本全通：337 + 166 + 71 + 426 + 561 + 137 + 397，`unresolved=0` |
+| 体积 | `10-source` 284.4 MB + `20-md` 137.4 MB + `30-wiki` 2.5 MB ≈ 424 MB（另有 `40-scratch` 248.4 MB，不入库） |
+| 版本 | git 提交 + GitHub 私有仓库（2026-11-25 结构迁移随本次提交） |
 | DSH 索引 | `kb` 库 120 页，119 条路径仍指旧 `50-wiki\concepts\`（建议清空重导入，见 §4.6.3） |
 | 描述覆盖 | `description` 560/570 页（pages 全满；sources/openq 不强制，见 `90-tool\schema.md`） |
 
@@ -2347,7 +2347,7 @@ golden set 从旧版 30 题扩到 **40 题、跨 3 个领域**（现有 5 本书
     │   工具：拖放即可                出处：rules §2 输入、§1 总则；§1.3.1 目标结构
     ▼
 ② 我   跑 90-tool\scripts\ingest.ps1 → 调 MinerU（mineru-kit：版面分析＋OCR）
-    │   产出 20-md\<入库夹>\：全文 md（多册合并）＋图片\ 裁剪图＋MinerU 中间产物
+    │   产出 20-md\<入库夹>.md：全文 md（多册合并）＋ 20-md\<入库夹>---图片\ 裁剪图 + MinerU 中间产物
     │   （middle.json 每块带 page_idx）；原件同步移入 10-source，inbox 清空
     │   出处：rules §3 输出、§2 输入；§1.8.7；§1.8.8
     ▼
@@ -2445,7 +2445,7 @@ golden set 从旧版 30 题扩到 **40 题、跨 3 个领域**（现有 5 本书
 | 读上下文 | `read` | 带 `offset`/`limit`，按 grep 行号前后各读 30 行 |
 | 找文件 | `glob` | `20-md\**\*.md` |
 | 跑脚本 | `pwsh` | 用完整 `powershell -NoProfile -ExecutionPolicy Bypass -File ...` |
-| 图谱 / 打包 | `graph.ps1` / `export.ps1` | 出 Mermaid 星图与 llms.txt（落 `40-scratch\`） |
+| 图谱 / 打包 | `graph.ps1` / `export.ps1` | 出 Mermaid 星图与 llms.txt（落 `40-scratch\gen\`） |
 | 出文档 | `office_docx` / `office_xlsx` | 只在要交付时用；解析 docx 不需要 Office |
 | 多步任务 | `todo_write` | 先列步骤再动手 |
 
@@ -2479,7 +2479,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "D:\Shervon_KnowledgeBase\90
 powershell -NoProfile -ExecutionPolicy Bypass -File "D:\Shervon_KnowledgeBase\90-tool\scripts\wiki-index.ps1"
 powershell -NoProfile -ExecutionPolicy Bypass -File "D:\Shervon_KnowledgeBase\90-tool\scripts\wiki-lint.ps1"
 powershell -NoProfile -ExecutionPolicy Bypass -File "D:\Shervon_KnowledgeBase\90-tool\scripts\kb-search.ps1" -Build
-powershell -NoProfile -ExecutionPolicy Bypass -File "D:\Shervon_KnowledgeBase\90-tool\scripts\check-links.ps1" -Md "D:\Shervon_KnowledgeBase\20-md\化工原理_王志魁_第5版_NA\化工原理_王志魁_第5版_NA.md"
+powershell -NoProfile -ExecutionPolicy Bypass -File "D:\Shervon_KnowledgeBase\90-tool\scripts\check-links.ps1" -Md "D:\Shervon_KnowledgeBase\20-md\化工原理_王志魁_第5版_NA.md"
 # 其余四本：-Md 换成对应书的 md 路径，同样要求 unresolved=0
 ```
 

@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+﻿# -*- coding: utf-8 -*-
 """生成图索引：30-wiki/figures-<入库夹名>.md
 每条：行号 | 图名 | 所在节 | 是否整页图 | 是否有题
 """
@@ -10,7 +10,7 @@ ap.add_argument('--Root', default=r'D:\Shervon_KnowledgeBase')
 a = ap.parse_args()
 book = a.Book
 ROOT = a.Root
-md = os.path.join(ROOT, '20-md', book, book + '.md')
+md = os.path.join(ROOT, '20-md', book + '.md')
 L = io.open(md, encoding='utf-8').read().split('\n')
 
 sec = ''
@@ -18,7 +18,7 @@ rows = []
 for i, s in enumerate(L, 1):
     if s.startswith('## ') or s.startswith('### '):
         sec = re.sub(r'#+\s*', '', s).strip()
-    for m in re.finditer(r'!\[\]\(图片/([^)]+)\)', s):
+    for m in re.finditer(r'!\[\]\([^)]*图片/([^)]+)\)', s):
         name = m.group(1)
         wholepage = bool(re.match(r'整页图-p\d+_\d+', name))
         noCap = wholepage or name.startswith('未命名图') or re.match(r'^[a-z] ', name) is not None
@@ -36,7 +36,8 @@ out = [f'# 图索引：{book}', '',
 for i, name, sec, whole, cap in rows:
     out.append(f'| {i} | {name} | {sec} | {whole} | {cap} |')
 
-dst = os.path.join(ROOT, '30-wiki', f'figures-{book}.md')
+os.makedirs(os.path.join(ROOT, '30-wiki', 'figures'), exist_ok=True)
+dst = os.path.join(ROOT, '30-wiki', 'figures', f'figures-{book}.md')
 io.open(dst, 'w', encoding='utf-8', newline='\n').write('\n'.join(out) + '\n')
 print(f'rows={len(rows)} whole={sum(1 for r in rows if r[3]=="整页")} nocap={sum(1 for r in rows if r[4]=="无题")}')
 print(dst)

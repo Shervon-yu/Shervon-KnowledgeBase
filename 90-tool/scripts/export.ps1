@@ -2,7 +2,7 @@
 # 用法：powershell -NoProfile -ExecutionPolicy Bypass -File 90-tool\scripts\export.ps1 [-OutFile 路径]
 # 输出：每页一行 `- title｜domain｜路径｜description`，按领域分组；喂外部 LLM 或迁移用。
 param(
-  [string]$OutFile = "D:\Shervon_KnowledgeBase\40-scratch\llms.txt",
+  [string]$OutFile = "D:\Shervon_KnowledgeBase\40-scratch\gen\llms.txt",
   [string]$WikiDir = "D:\Shervon_KnowledgeBase\30-wiki"
 )
 

@@ -317,7 +317,7 @@ function Import-Figures([string]$mdText, [string]$workDir, [string]$destDir) {
     if ($ms.Count -eq 0) { return $mdText }
     $lines = $mdText -split "`r?`n"
     $figNo = 0
-    $imgDir = Join-Path $destDir '图片'
+    $imgDir = $destDir
     if (-not $Preview) { New-Item -ItemType Directory -Force -Path $imgDir | Out-Null }
     foreach ($m in $ms) {
         $raw = $m.Groups[2].Value
@@ -340,7 +340,7 @@ function Import-Figures([string]$mdText, [string]$workDir, [string]$destDir) {
         $base = Clean-FileName $cap
         $dest = Get-FreePath $imgDir $base $ext
         if (-not $Preview) { Copy-Item -LiteralPath $cand -Destination $dest }
-        $newLink = "![$($m.Groups[1].Value)](图片/" + (Split-Path $dest -Leaf) + ")"
+        $newLink = "![$($m.Groups[1].Value)](" + $script:LinkPrefix + (Split-Path $dest -Leaf) + ")"
         $mdText = $mdText.Replace($m.Value, $newLink)
     }
     return $mdText
@@ -390,7 +390,7 @@ function Import-FiguresFromJson([string]$mdText, [string]$workDir, [string]$dest
     $base = Join-Path $workDir 'x'
     $figs = Get-FigureList $base
     if ($figs.Count -eq 0) { return (Import-Figures $mdText $workDir $destDir) }
-    $imgDir = Join-Path $destDir '图片'
+    $imgDir = $destDir
     if (-not $Preview) { New-Item -ItemType Directory -Force -Path $imgDir | Out-Null }
     $i = 0
     foreach ($fg in $figs) {
@@ -403,8 +403,8 @@ function Import-FiguresFromJson([string]$mdText, [string]$workDir, [string]$dest
             # 同字节重复图：不复制，引用直接指向已有文件
             $final = $script:FigHash[$fh]
             $rel0 = $fg.Path -replace '\\', '/'
-            $mdText = $mdText.Replace('(' + $rel0 + ')', '(图片/' + $final + ')')
-            $mdText = $mdText.Replace('(' + [IO.Path]::GetFileName($rel0) + ')', '(图片/' + $final + ')')
+            $mdText = $mdText.Replace('(' + $rel0 + ')', '(' + $script:LinkPrefix + $final + ')')
+            $mdText = $mdText.Replace('(' + [IO.Path]::GetFileName($rel0) + ')', '(' + $script:LinkPrefix + $final + ')')
             continue
         }
         $name = Format-FigureName $fg.Caption $i $ext
@@ -413,8 +413,8 @@ function Import-FiguresFromJson([string]$mdText, [string]$workDir, [string]$dest
         if (-not $Preview) { Copy-Item -LiteralPath $src -Destination $dest }
         $script:FigHash[$fh] = $final
         $rel = $fg.Path -replace '\\', '/'
-        $mdText = $mdText.Replace('(' + $rel + ')', '(图片/' + $final + ')')
-        $mdText = $mdText.Replace('(' + [IO.Path]::GetFileName($rel) + ')', '(图片/' + $final + ')')
+        $mdText = $mdText.Replace('(' + $rel + ')', '(' + $script:LinkPrefix + $final + ')')
+        $mdText = $mdText.Replace('(' + [IO.Path]::GetFileName($rel) + ')', '(' + $script:LinkPrefix + $final + ')')
     }
     return $mdText
 }
@@ -480,7 +480,7 @@ foreach ($book in $books) {
         Add-Issue "$bookName ：20-md 已有 $N 个入库夹（>40），按规则必须分组，请用 -Layer 指定分类夹"
     }
     $srcDir = if ($layerRel) { Join-Path (Join-Path $SrcRoot $layerRel) $bookName } else { Join-Path $SrcRoot $bookName }
-    $mdDir  = if ($layerRel) { Join-Path (Join-Path $MdRoot  $layerRel) $bookName } else { Join-Path $MdRoot  $bookName }
+    $imgSub = "$bookName---图片"; $linkPre = if ($layerRel) { "$($layerRel -replace "\\","/")/$imgSub" } else { $imgSub }; $mdDir = if ($layerRel) { Join-Path (Join-Path $MdRoot $layerRel) $imgSub } else { Join-Path $MdRoot $imgSub }
     $topicVal = if ($layerRel) { ($layerRel -split '\\')[-1] } else { 'NA' }
     $id = $bookHash.Substring(0, [Math]::Min(12, $bookHash.Length))
 
@@ -527,7 +527,7 @@ foreach ($book in $books) {
             $t = $r.Text
             if (-not $Preview -and $r.WorkDir) {
                 New-Item -ItemType Directory -Force -Path $mdDir | Out-Null
-                $t = Import-FiguresFromJson $t $r.WorkDir $mdDir
+                $script:LinkPrefix = $linkPre
                 # 暂存 MinerU 产物，供图名归一工序 figures.py 使用
                 $stash = Join-Path $NewRoot ('mineru-' + (Clean-FileName $bookName))
                 if (Test-Path -LiteralPath (Join-Path $r.WorkDir 'x')) {
@@ -573,7 +573,7 @@ foreach ($book in $books) {
     if ($isQuar) {
         $mdPath = Get-FreePath $Quar ('Q-' + (Clean-FileName $bookName)) '.md'
     } else {
-        $mdPath = Get-FreePath $mdDir (Clean-FileName $bookName) '.md'
+        $mdPath = Get-FreePath $MdRoot (Clean-FileName $bookName) '.md'
     }
     $srcRel = ($srcDir.Substring($Root.Length + 1)) -replace '\\', '/'
 

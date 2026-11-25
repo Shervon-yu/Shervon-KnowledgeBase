@@ -88,11 +88,13 @@ function Get-LineCount([string]$t){ ([regex]::Matches($t, "`n")).Count }
 
 function Write-Book([string]$fn, [string]$titleLine, [string]$body){
   $txt = "# 索引：$titleLine`n`n> 由 `90-tool\scripts\wiki-index.ps1` 生成，单册上限 $MaxLines 行。返回总目录：index.md`n> 生成时间：$stamp`n`n" + $body
-  [System.IO.File]::WriteAllText((Join-Path $WikiDir $fn), $txt, $enc)
+  [System.IO.File]::WriteAllText((Join-Path $IndexDir $fn), $txt, $enc)
 }
 
 $enc = New-Object System.Text.UTF8Encoding($false)
 $stamp = Get-Date -Format 'yyyy-MM-dd HH:mm'
+$IndexDir = Join-Path $WikiDir 'index'
+if(-not (Test-Path -LiteralPath $IndexDir)){ New-Item -ItemType Directory -LiteralPath $IndexDir | Out-Null }
 
 $head = "# Wiki 索引`n`n> 本文件由 ``90-tool\scripts\wiki-index.ps1`` 生成，人工只补「一句话摘要」列。单册上限 $MaxLines 行：整库不超则只写本文件；超了按 domain 拆一级分册，单领域分册再超则按 section 拆二级、按条数拆多块。`n> 生成时间：$stamp`n`n"
 
@@ -106,7 +108,7 @@ $single = $head + ($singleParts -join '')
 $domains = @($all | Group-Object domain | Sort-Object -Property @{Expression={$_.Count};Descending=$true}, Name)
 
 if((Get-LineCount $single) -le $MaxLines){
-  Get-ChildItem -LiteralPath $WikiDir -Filter 'index-*.md' -File | Remove-Item -Force
+  Get-ChildItem -LiteralPath $IndexDir -Filter 'index-*.md' -File | Remove-Item -Force
   [System.IO.File]::WriteAllText((Join-Path $WikiDir 'index.md'), $single, $enc)
   Write-Host ("index.md 已写：页面 {0} 个，{1} 行" -f $all.Count, (Get-LineCount $single))
 } else {
@@ -118,7 +120,7 @@ if((Get-LineCount $single) -le $MaxLines){
   [void]$sb.AppendLine('')
   [void]$sb.AppendLine('| 领域 | 页数 | 分册 |')
   [void]$sb.AppendLine('|:---|---:|:---|')
-  $old = @(Get-ChildItem -LiteralPath $WikiDir -Filter 'index-*.md' -File | ForEach-Object { $_.Name })
+  $old = @(Get-ChildItem -LiteralPath $IndexDir -Filter 'index-*.md' -File | ForEach-Object { $_.Name })
   $written = @()
   foreach($g in $domains){
     $slug = ($g.Name -replace '[\\/:*?"<>|\s]','-')
@@ -151,6 +153,6 @@ if((Get-LineCount $single) -le $MaxLines){
   }
   [void]$sb.AppendLine('')
   [System.IO.File]::WriteAllText((Join-Path $WikiDir 'index.md'), $sb.ToString(), $enc)
-  foreach($o in $old){ if($written -notcontains $o){ Remove-Item -LiteralPath (Join-Path $WikiDir $o) -Force } }
+  foreach($o in $old){ if($written -notcontains $o){ Remove-Item -LiteralPath (Join-Path $IndexDir $o) -Force } }
   Write-Host ("index.md 已写：页面 {0} 个，按 {1} 个领域拆分，共 {2} 个分册" -f $all.Count, $domains.Count, $written.Count)
 }

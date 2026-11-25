@@ -252,7 +252,7 @@ $dead = @()
 Get-ChildItem -LiteralPath $MdRoot -Recurse -Filter '*.md' -ErrorAction SilentlyContinue | Where-Object { $_.FullName -notmatch '\\_quarantine\\' } | ForEach-Object {
     $t = [IO.File]::ReadAllText($_.FullName, [Text.Encoding]::UTF8)
     $n = 0
-    foreach ($m in [regex]::Matches($t, '!\[[^\]]*\]\((图片/[^)]+)\)')) {
+    foreach ($m in [regex]::Matches($t, '!\[[^\]]*\]\(([^)]+图片/[^)]+)\)')) {
         $rel = [Uri]::UnescapeDataString($m.Groups[1].Value)
         if (-not (Test-Path -LiteralPath (Join-Path $_.DirectoryName $rel))) { $n++ }
     }
