@@ -1,3 +1,14 @@
+## v3.23 — 2026-11-25（取消 MinerU 产物永久保留：用完即删，溯源改为重跑解析）
+
+- 起因：用户判定 7 本 md 定稿、不再重排重抽图，`40-scratch\parse\` 的 3 个 zip（270 MB / 1370 文件）只剩「误删后重建」这一点价值。核实后确认 md 自带 `<!-- page: N -->` 页码锚点，行号锚点由 `md-anchor.ps1` 从 md 标题算出（不读产物），故产物不再是锚点的唯一来源。
+- 删除：`40-scratch\parse\` 整目录（270 MB，实测删前 1370 个文件）。
+- 规则：`rules.md` §3 改为「MinerU 产物用完即删」，并写清删除前提——md 必须已承载正文、公式、pipe 表格、图题与图链，且带 `<!-- page: N -->` 页码锚点；图块 bbox 不入 md，随产物一并消失；需要溯源就从 `10-source\<书>.pdf` 重跑一次 `mineru-kit parse`（只耗本机算力，不耗 token）。§11 figures.py 说明、§16 命令前置条件与 v3.3 保留说明同步改。
+- 脚本：`ingest.ps1` 删除「复制 zip 到 `40-scratch\parse\`」的代码块；`md-build.py` 模块注释的 zip 查找顺序加注「产物不再常驻，一般不存在」。
+- `.gitignore`：删掉 `40-scratch/parse/` 忽略行；整份重写为干净 UTF-8（此前追加 `90-tool/search-index.json` 时把该文件写成了非 UTF-8，`read` 报 invalid UTF-8）。
+- 溯源链路：`10-source\` 7 个 PDF 原件（284.4 MB）仍在，是重跑解析的入口。
+- 验证：`ingest.ps1`、`ingest-build.ps1` 经 PowerShell Parser 校验 PARSE OK；`md-build.py` 经 `ast.parse` 通过。
+- 未动：`40-scratch\_acl\`（419 张未引用图）。其中 68 张属 HGT 20569-2013，该书无 md、无原件、无产物，去留等用户决定。
+
 ## v3.22 — 2026-11-25（结构迁移：20-md 平铺 + 图夹后缀、30-wiki 分册收纳、40-scratch 归档）
 
 - 起因：用户指出 `30-wiki` 根下 `index-*` / `figures-*` 会越积越多、`20-md` 每本书一个目录不便定位、`40-scratch` 散着 490+ 文件。

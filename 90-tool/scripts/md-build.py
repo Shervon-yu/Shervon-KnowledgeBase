@@ -8,7 +8,7 @@ r"""md-build.py —— 从 MinerU middle_json 按页序重建 20-md（页码锚�
   python md-build.py verify <入库夹名|md 路径>    # v3.16 标题体检：粗体假标题/漏章/孤立层级
 
 入库夹名 = 20-md 下的文件夹名（= md 文件名去掉 .md）。
-zip 查找顺序：--zipdir → 40-scratch\parse\<入库夹名> → %TEMP%\mk-full\<入库夹名>。
+zip 查找顺序：--zipdir → 40-scratch\parse\<入库夹名>（v3.23 起产物不再常驻，一般不存在）→ %TEMP%\mk-full\<入库夹名>。
 """
 import zipfile, os, json, io, re, sys, html, collections, glob, tempfile, shutil, unicodedata
 

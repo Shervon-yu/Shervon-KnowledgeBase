@@ -1,0 +1,8 @@
+revert(ingest): MinerU 产物不再永久保留，用完即删
+
+- 删 40-scratch\parse\ 整目录（270 MB / 1370 文件）：7 本 md 已定稿，不再重排重抽图
+- rules.md §3/§11/§16：产物用完即删，写清删除前提（md 须承载正文/公式/表格/图题/图链 + <!-- page: N --> 页码锚点；bbox 随产物消失）；溯源改从 10-source PDF 重跑 mineru-kit parse，不耗 token
+- ingest.ps1：去掉复制 zip 到 40-scratch\parse\ 的代码块
+- md-build.py：zip 查找顺序注释加注产物不再常驻
+- .gitignore：删 parse/ 忽略行，整份重写为干净 UTF-8（修掉追加 search-index.json 时写坏的编码）
+- VERSION 3.23，CHANGELOG v3.23

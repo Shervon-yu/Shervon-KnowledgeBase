@@ -39,7 +39,7 @@ v3.10 的改动（2026-11-19，建页判据以知识为单位）：
 
 v3.3 的改动（2026-11-17，一条龙收尾）：
 - `ingest.ps1` 收尾自动调用 `ingest-build.ps1`：MinerU 解析 → 图名归一 → 图链自检 → **带页码锚点重建正文 + 七行验收表** → `catalog.ps1`，一条命令跑完，不再手跑第二串命令。
-- MinerU 解析产物（含 `middle_json.json` 的 zip）由 `ingest.ps1` 复制到 `40-scratch\parse\<入库夹名>\` 并**永久保留**（v3.2 及以前解析完就删，导致无法重建锚点）；禁止手动删。
+- MinerU 解析产物（含 `middle_json.json` 的 zip）**用完即删**：md 与 `<入库夹名>---图片\` 建成、`ingest-build.ps1` 验收表与 `check-links.ps1` 全过之后，产物不再保留（v3.21 及以前复制到 `40-scratch\parse\` 永久保留，2026-11-25 起取消，存量 270 MB 已删）。删除前提：md 已承载 MinerU 输出的正文、公式、pipe 表格、图题与图链，并带 `<!-- page: N -->` 页码锚点（页码信息随 md 保留）；图块的 bbox 坐标不入 md，随产物一并消失。需要溯源时从 `10-source\<书>.pdf` 重跑一次 `mineru-kit parse`——只耗本机算力，不耗 token。
 - 修 `check-links.ps1` RENAME 分支：原来用 `Split-Path -Leaf` 得新名，把 `图片/` 前缀吞掉，生成 `](图14.12…jpg)` 死链；改后保留原目录前缀。
 - §16 完成判据升到 v3.6 五条（新增覆盖率门 `coverage.py --strict` 与图索引覆盖）。
 - v3.7：图索引改为可机器计数（`figure-index.py -Book` → `30-wiki\figures-<入库夹名>.md`）；sources 必须块状三行（`book/section/lines`），行内写法会被 lint 判「无来源」；`.ps1` 必须带 UTF-8 BOM（PS 5.1 按 ANSI 读中文会语法错），含中文的 `.py` 用 `write` 落盘、勿用 here-string；新书禁用 `refs-remap.py`（`book_of()` 只收录化工原理/气液搅拌釜两本，其余一律按 §14 手工比对锚点重取行号）。
@@ -208,7 +208,7 @@ inbox：已清空
 
 ## 11. 图名归一工序（DSH 专用，入库后跑）
 
-`90-tool\scripts\figures.py`：读 MinerU 产物 → 按 bbox 把图题配回图片 → 按 SHA256 去重 → 改名为 `图X.Y 说明[_a].jpg` 并放进 `<入库夹>---图片\` → 改写 md 引用为 `<入库夹>---图片/...` → 报告写 `40-scratch\gen\figures-report-<入库夹>.json`。**它由 `ingest.ps1` 内部调用，MinerU 原始产物随后即被删除**——只有另外保留了产物时才可手工重跑（`--mineru` 指向那份产物）。
+`90-tool\scripts\figures.py`：读 MinerU 产物 → 按 bbox 把图题配回图片 → 按 SHA256 去重 → 改名为 `图X.Y 说明[_a].jpg` 并放进 `<入库夹>---图片\` → 改写 md 引用为 `<入库夹>---图片/...` → 报告写 `40-scratch\gen\figures-report-<入库夹>.json`。**它由 `ingest.ps1` 内部调用；v3.23 起 MinerU 产物用完即删**——要重跑图名归一，先从 `10-source\<书>.pdf` 重新解析一次 `mineru-kit parse`，`--mineru` 指向那次产物。
 
 ```
 python -X utf8 "D:\Shervon_KnowledgeBase\90-tool\scripts\figures.py" `
@@ -339,7 +339,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "D:\Shervon_KnowledgeBase\90
 
 ## 16. 解析产物 → 20-md：生成规范（v3.2）
 
-一条命令（MinerU 解析产物已在 `40-scratch\parse\<入库夹名>\` 或 `%TEMP%\mk-full\<入库夹名>\`）：
+一条命令（MinerU 产物不再常驻：`-ZipDir` 指向一份现场存在的解析产物，或用 `%TEMP%\mk-full\<入库夹名>\`；缺了就先 `mineru-kit parse <10-source\<书>.pdf>` 重跑一次）：
 
 ```
 powershell -NoProfile -ExecutionPolicy Bypass -File "90-tool\scripts\ingest-build.ps1" -Book "<入库夹名>"
@@ -347,7 +347,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "90-tool\scripts\ingest-buil
 
 内部六步：`md-build.py write`（按页序重建）→ `fig-names.py apply`（无图题图定名）→ `md-build.py prune`（未引用图归档）→ `check-links.ps1`（图链自检）→ `md-build.py verify`（标题体检，v3.16）→ 验收表 8 行。
 
-v3.3 起 `ingest.ps1` 收尾**自动**调用本脚本（md 尚无锚点时），并把 MinerU zip 复制到 `40-scratch\parse\<入库夹名>\` 永久保留；单独手跑仅用于重建（`-Force`）。
+v3.3 起 `ingest.ps1` 收尾**自动**调用本脚本（md 尚无锚点时）；v3.23 起不再把 MinerU zip 复制进仓库（原先复制到 `40-scratch\parse\` 永久保留的做法取消，见第 3 节）。单独手跑仅用于重建（`-Force`），需自备一份新解析的产物。
 
 **七条硬性产出**（缺一条都不算入库完成）：
 

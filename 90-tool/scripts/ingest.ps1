@@ -535,11 +535,8 @@ foreach ($book in $books) {
                     $script:Stashed = $stash
                 }
             }
-            if ($r.Zip -and (Test-Path -LiteralPath $r.Zip)) {
-                $parseDir = Join-Path (Join-Path $NewRoot 'parse') (Clean-FileName $bookName)
-                New-Item -ItemType Directory -Force -Path $parseDir | Out-Null
-                Copy-Item -LiteralPath $r.Zip -Destination (Join-Path $parseDir ([IO.Path]::GetFileName($r.Zip))) -Force
-            }
+            # v3.23：MinerU 产物不再留存（原先复制到 40-scratch\parse\ 永久保留的做法取消）。
+            # 需要溯源时从 10-source\<书>.pdf 重跑一次 mineru-kit parse，只耗本机算力。
             if ($r.WorkDir) { Remove-Item -LiteralPath $r.WorkDir -Recurse -Force -ErrorAction SilentlyContinue }
         }
         else {
