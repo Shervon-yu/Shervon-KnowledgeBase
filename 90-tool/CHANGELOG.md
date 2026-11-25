@@ -3,7 +3,7 @@
 - 起因：用户指出 `30-wiki` 根下 `index-*` / `figures-*` 会越积越多、`20-md` 每本书一个目录不便定位、`40-scratch` 散着 490+ 文件。
 - `20-md`：每本书的 `<书>.md` 移到 `20-md\` 根；原 `<书>\图片\` 更名为 `<书>---图片\`；md 内图链前缀改为 `<书>---图片/`（7 本共 2095 条，`check-links` 全部 `unresolved=0`）。脚本同步：`md-build.py`（md/图目录与图链前缀、prune 正则、`_resolve` 只认 20-md 根的 md）、`ingest.ps1`（`$mdDir` 改指图夹、新增 `$imgSub`/`$linkPre`、md 落 20-md 根、分层只作用于图夹）、`ingest-build.ps1`、`fig-names.py`、`figures.py`（支持 `--book <书>---图片`，报告落 `40-scratch\gen\`）、`coverage.py`、`catalog.ps1`、`figure-index.py`。
 - `30-wiki`：新增 `index\`（9 个分册）与 `figures\`（7 个图索引），总表 `index.md` 留根；`wiki-index.ps1` 写 `index\` 并在拆册时清旧册，`figure-index.py` 写 `figures\`，`wiki-lint.ps1` 漂移检查改递归。
-- `40-scratch`：按用途分 `gen\`（生成物）、`desc\`（描述中间数据）、`backup\`（历史快照）、`legacy\`（一次性补丁脚本与 dump）、`parse\`（MinerU 原始 zip）、`_acl\`（未引用图）、`_tmp\`（临时）；整目录写入 `.gitignore` 并 `git rm -r --cached`（磁盘保留）。
+- `40-scratch`：按用途分 `gen\`（生成物）、`desc\`（描述中间数据）、`backup\`（历史快照）、`legacy\`（一次性补丁脚本与 dump）、`parse\`（MinerU 原始 zip）、`_acl\`（未引用图）、`_tmp\`（临时）。体积大的 `parse\`（227 MB）与 `_acl\` 仍由 `.gitignore` 排除；其余子目录合计几 MB，继续入库以便回溯。
 - 规则：`rules.md` §3 输出表改新布局、§4 阈值改按图夹计数、§12 机器区路径、§16 生成规范；**新增 §17 规模触发器**（P4 值守：≤2000 现行 / >2000 实测延迟、>5 秒迁 SQLite / >5000 重跑 golden set 再评估向量层）。
 - 文档：`kb-blueprint.md` §4.1 目录表与现状数字（7 本、2095 图、595 文件）、§4.3 泳道产出、§4.5 工具表输出路径、§4.6 检查命令同步。
 - 验证：`wiki-index` 570 页 / 4 领域 / 9 分册（最大 290 行）；lint 570 页 0 错 0 告警，`description` 560/570；`catalog` 7 本；`export` 570 页；`graph` 570 节点 1977 边。
