@@ -13,3 +13,6 @@ __pycache__/
 # 涓�娆℃�ц崏绋夸笌涓存椂鐩綍
 40-scratch/_acl/
 .obsidian/
+
+# 机器生成的检索索引（可 kb-search.ps1 -Build 重建）
+90-tool/search-index.json
