@@ -2,6 +2,7 @@
 type: concept
 title: 双组分溶液的t-y-x图与y-x图
 question: t-y-x 图上泡点线、露点线与三个相区怎么读，杠杆定律怎么用，y-x 图离对角线越远说明什么？
+description: 平衡两相必有y>x，是蒸馏分离的原理基础；杠杆定律表示两相量比等于线段反比，y-x图离对角线越远越易分离。
 aliases: [t-y-x 图, y-x 图, 泡点线, 露点线, 杠杆定律, 相平衡曲线]
 domain: 化工原理
 status: draft

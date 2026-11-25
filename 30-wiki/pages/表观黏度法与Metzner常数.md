@@ -2,6 +2,7 @@
 type: concept
 title: 表观黏度法与Metzner常数
 question: 假塑性流体怎么借用牛顿流体的功率曲线？
+description: 把同功率牛顿流体的黏度定义为表观黏度，用 Metzner 常数 ks（六叶涡轮 11.5、螺带 30）换算切变速率后借牛顿 Np-Re 曲线求功率，过渡区高黏叶轮重合、低黏叶轮偏离。
 aliases: [Metzner常数, 表观黏度法, 表观雷诺数]
 domain: 搅拌与混合设备
 status: draft

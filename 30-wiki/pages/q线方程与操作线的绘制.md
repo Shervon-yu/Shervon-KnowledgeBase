@@ -2,6 +2,7 @@
 type: concept
 title: q线方程与操作线的绘制
 question: q 线为什么必过 (xF,xF)，五种进料热状态下 q 线方位如何变化？
+description: 推导 q 线方程并说明必过 (xF,xF) 点，按五种进料热状态给出 q 线方位，四步完成操作线作图。
 aliases: [q线, q线方程, 操作线绘制, 两操作线交点, 进料线]
 domain: 化工原理
 status: draft

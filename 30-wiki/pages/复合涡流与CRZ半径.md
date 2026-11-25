@@ -2,6 +2,7 @@
 type: concept
 title: 复合涡流与CRZ半径
 question: 圆筒容器里无挡板搅拌的复合涡流和强制涡流区半径怎么算？
+description: 无挡板圆筒容器流场接近Rankine复合涡流：中心强制涡流区v=rω、外围自由涡流v=ωrc²/r，临界半径rc可由液面高度反算。
 aliases: [Rankine复合涡流, 强制涡流区, CRZ, 圆筒形旋转涡流]
 domain: 搅拌与混合设备
 status: draft

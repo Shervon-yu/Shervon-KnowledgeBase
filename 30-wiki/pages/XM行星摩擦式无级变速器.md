@@ -2,6 +2,7 @@
 type: concept
 title: XM行星摩擦式无级变速器
 question: XM 型无级变速器怎么工作，型号标记与减速机组合怎么表示？
+description: 说明 XM 行星摩擦式无级变速器的结构与型号标记，变速器负责无级段、后接减速机放大转矩，整机转速为两级传动比乘积。
 aliases: [XM型, XMW, XML, XMF, 行星摩擦式无级变速器, 表9-60, 表9-61]
 domain: 搅拌与混合设备
 status: draft

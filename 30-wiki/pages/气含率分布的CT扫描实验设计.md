@@ -2,6 +2,7 @@
 type: concept
 title: 气含率分布的CT扫描实验设计
 question: 为什么把 CT 扫描位置定在 3/4 静液高处？四个影响因素各自怎么取值？
+description: 因透平上下负压区使气泡在 3/4 静液高处分布相对均匀，主扫描面选此处，按四因素设实验条件矩阵。
 aliases: [CT扫描实验设计, 3/4静液高, 扫描位置]
 domain: 气液搅拌釜γ-CT
 status: draft

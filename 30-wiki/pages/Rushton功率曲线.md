@@ -2,6 +2,7 @@
 type: concept
 title: Rushton功率曲线
 question: 已知雷诺数怎么查搅拌功率准数？
+description: 由 Np-Re 算图查功率准数，层流段 Np 与 Re 乘积为常数，算例显示同工况换叶轮功率差 6.7 倍，读数误差约 ±5%。
 aliases: [鲁申科算图, 功率曲线, Np-Re曲线]
 domain: 搅拌与混合设备
 status: draft

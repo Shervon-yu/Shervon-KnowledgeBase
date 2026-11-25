@@ -2,6 +2,7 @@
 type: concept
 title: EM成像的实现与气含率分布计算
 question: 空釜重建里壁厚 3 格、轴径 4 格意味着什么分辨率，气含率又怎么由衰减系数反算？
+description: 空釜重建显示壁厚 3 格、轴径 4 格，验证 2 mm 分辨率，气含率按式 4.58 由液气衰减差反算且对衰减误差敏感。
 aliases: [CT成像检验, 气含率断面分布, 4.58式, 空釜扫描]
 domain: 气液搅拌釜γ-CT
 status: draft

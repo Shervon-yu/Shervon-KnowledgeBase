@@ -2,6 +2,7 @@
 type: concept
 title: CT重建算法的两类与比较
 question: 变换法与迭代法各自在什么条件下失效，为什么本书最终选 EM？
+description: 对比变换法与迭代法，γ-CT 因 7 探测器 100 视角投影稀疏，FBP 易生星状伪迹，故选基于统计的 EM 迭代法。
 aliases: [重建算法, 解析法, 迭代法, FBP, ART, EM]
 domain: 气液搅拌釜γ-CT
 status: draft

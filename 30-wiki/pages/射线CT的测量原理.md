@@ -2,6 +2,7 @@
 type: concept
 title: 射线CT的测量原理
 question: γ-CT 如何由透射强度比反算像素气含率，为什么 γ 比 X 更适合工业釜？
+description: γ-CT由透射强度比按Lambert-Beer定律反算像素气含率，γ射线单能且穿透力强，比多能谱X射线更适合工业釜。
 aliases: [射线CT, γ-CT, X-CT, Lambert-Beer定律, 线衰减, 气含率重建]
 domain: 气液搅拌釜γ-CT
 status: draft

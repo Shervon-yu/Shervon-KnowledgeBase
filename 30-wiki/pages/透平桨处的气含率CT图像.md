@@ -2,6 +2,7 @@
 type: concept
 title: 透平桨处的气含率CT图像
 question: 桨平面 CT 图为什么是"黑盘 + 白环 + 黑白混合大环"三层？随高度升高白环为什么会消失？
+description: 透平桨平面CT图像呈中心黑盘、中环白环与外环黑白相混三层，三种气穴结构形状相同仅气含率高低有别
 aliases: [桨处CT, 黑色圆盘区, 白色圆环区]
 domain: 气液搅拌釜γ-CT
 status: draft

@@ -2,6 +2,7 @@
 type: concept
 title: Rushton气液搅拌釜气含率断面分布的CFD模拟-总览
 question: 第7章如何用双流体+PBM 把气含率分布算出来？各页之间是什么关系？
+description: 第7章用双流体加 PBM 算气含率、气泡尺寸与速度场并以 CT 校验，结论是趋势可行、绝对值不可信。
 aliases: [第7章总览, CFD模拟总览, 气含率分布模拟总览]
 domain: 气液搅拌釜γ-CT
 status: stable

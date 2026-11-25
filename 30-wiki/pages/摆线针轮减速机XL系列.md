@@ -2,6 +2,7 @@
 type: concept
 title: 摆线针轮减速机XL系列
 question: XL 系列摆线针轮减速机的级数、机型号与许用转矩怎么查？
+description: XL 系列摆线针轮减速机单级传动比 9～87、两级 121～5133、三级 5841～658503，分立式双轴型与直联型。
 aliases: [XL系列, 摆线针轮减速机, 表9-28, 表9-29, HG/T 3139.2]
 domain: 搅拌与混合设备
 status: draft

@@ -2,6 +2,7 @@
 type: concept
 title: CFD模拟气液两相流的两种方法
 question: Euler-Lagrange 与 Euler-Euler 各自适合什么场合？为什么搅拌釜多用双流体模型？
+description: 对比 Euler-Lagrange 与 Euler-Euler 两类方法，20 cm 釜内气泡达 10^7 量级使 Lagrange 跟踪不现实，搅拌釜主流用双流体模型加 PBM。
 aliases: [欧拉-拉格朗日法, 欧拉-欧拉法, 双流体模型, 离散颗粒模型]
 domain: 气液搅拌釜γ-CT
 status: stable

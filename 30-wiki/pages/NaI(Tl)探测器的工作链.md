@@ -2,6 +2,7 @@
 type: concept
 title: NaI(Tl)探测器的工作链
 question: 从一次 γ 作用到计算机里的一条计数，中间要经过哪几级、各自放大多少？
+description: 梳理闪烁体到多道分析器的五级链路，一个闪烁脉冲最终产生 10^7～10^10 个电子，0~10 V 按 500 道分级。
 aliases: [NaI(Tl)探测器, 闪烁探测系统, 光电倍增管, 多道分析器, 单道分析器]
 domain: 气液搅拌釜γ-CT
 status: draft

@@ -2,6 +2,7 @@
 type: concept
 title: EM算法原理与公式
 question: 为什么把 γ 发射当泊松、把穿像素当二项，就能推出一个乘性迭代的重建式？
+description: EM 重建把 γ 发射当泊松、射线穿像素当二项分布，经 E 步与 M 步迭代推出重建式，适合低计数投影不足的 γ-CT。
 aliases: [EM算法, 期望最大化, 最大似然, E步, M步, 4.56式]
 domain: 气液搅拌釜γ-CT
 status: draft

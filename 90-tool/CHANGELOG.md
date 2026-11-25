@@ -1,3 +1,16 @@
+## v3.21 — 2026-11-25（§3.3 升级执行：两区 + schema + description + 自建检索 + 分册下沉 + 图谱出口）
+
+- 起因：kb-blueprint.md §3.3「升级方案」定稿，用户批准执行（P0–P4）。
+- 结构（P0）：新建 `30-wiki\notes\` 经验区（0 页起步）；删除空目录 `30-wiki\howto\`（howto 类型并入 notes）；`type` 枚举加 `note` 成七选一；frontmatter 新增 `description` 字段（≤200 字，notes 必填、pages 全区补满）。
+- 规则（P0/P2）：新建 `90-tool\schema.md`（13 字段机器口径，lint 第 0 项改读它）；`rules.md` v3.19（五目录职责改两区、ingest 加删 API key/PII 一条）；`AGENTS.wiki.md` v1.4（Query 四步扩六步：会话开场读 lint 告警+log 尾 5 行、收尾三件事）；`prompt-dsh.md` v3.4（同步两钩子）。
+- 检索（P1）：新建 `90-tool\scripts\kb-search.ps1`——扫 pages\+notes\ 建 BM25 倒排索引（中文二元组，k1=1.2 b=0.75，字段权重 title×3/aliases×2/description×2/正文×1），落 `90-tool\search-index.json`；查询带 score/domain/`#L` 命中行，参数 -Q/-Top/-Domain。实测 560 页索引、查询秒回。
+- 索引（P1）：重写 `wiki-index.ps1`——领域树 index.md + 多级分册，单册 >300 行自动下沉；实测 570 页 4 领域 9 分册，最大 290 行。
+- 描述（P1）：7 个并行子代理为 pages 560 页各写一句 description 并插入 frontmatter（question 行后），lint 校验 0 错，覆盖 560/570（sources/openq 不强制）。
+- 出口（P3）：新建 `graph.ps1`（related/supersedes → Mermaid/DOT，实测 570 节点 1977 边）与 `export.ps1`（llms.txt 摘要包，570 页）。
+- 坑：graph.ps1 双引号内三反引号被 PS 当转义、字符串永不闭合（ParserError 链）；改单引号解决。其余同 v3.20 BOM 教训。
+- 文档：kb-blueprint.md §4 使用说明随升级同步（页数/分册/lint 项/工具表/触发器口径）；本条目与 VERSION 同步。
+- 触发：用户 2026-11-24 定稿 §3.3、2026-11-25 批准执行；规则文件可改（用户已授权）。
+
 ## v3.20 — 2026-11-23（合订本标准：分标准 h1 注入 + 表格扁平化）
 
 - 起因：HG/T 20592~20635-2009 为 19 个分标准合订本，分标准封面编号行多数被 MinerU 丢失，全书无 h1 分界 → 标题守卫把 141 个裸数字标题全部降级，TITLE-CHECK FAIL（假标题 141）。

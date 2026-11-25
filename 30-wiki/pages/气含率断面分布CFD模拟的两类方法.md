@@ -2,6 +2,7 @@
 type: concept
 title: 气含率断面分布CFD模拟的两类方法
 question: Euler-Euler 与 Euler-Lagrange 各自代价与适用面在哪，为什么搅拌釜模拟比鼓泡塔难？
+description: 对比 Euler-Euler 与 Euler-Lagrange 两条模拟路线，指出搅拌釜因气泡强随机性比鼓泡塔更难模拟，文献气含率多在 0.01～0.07
 aliases: [CFD模拟, Euler-Euler, Euler-Lagrange, 双流体模型, 离散轨道模型, 群体平衡]
 domain: 气液搅拌釜γ-CT
 status: draft

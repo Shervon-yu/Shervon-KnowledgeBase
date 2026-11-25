@@ -2,6 +2,7 @@
 type: concept
 title: 湿空气的I-H图
 question: I-H 图上五条线各是什么，如何由一个状态点读出七个参数？
+description: I-H 图由等 H、等 I、等 t、等相对湿度与水汽分压五条线构成，一个状态点可读出七个参数，预热降相对湿度利于干燥而加压不利
 aliases: [I-H图, 焓湿图, 湿度图, 等焓线, 等相对湿度线, 水蒸气分压线]
 domain: 化工原理
 status: draft

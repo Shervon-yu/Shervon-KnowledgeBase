@@ -2,6 +2,7 @@
 type: concept
 title: 电阻CT与电容CT
 question: ERT 与 ECT 分别靠什么物性成像，为什么电极数目不能无限增加？
+description: ERT 依电导率、ECT 依介电常数成像，电极常用 6～16 个，增多电极会降低信噪比并放大边缘效应，且需器壁开孔限制其在钢制釜上的应用。
 aliases: [电阻CT, 电容CT, ERT, ECT, 电学层析成像]
 domain: 气液搅拌釜γ-CT
 status: draft

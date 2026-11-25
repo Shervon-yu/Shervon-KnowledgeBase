@@ -2,6 +2,7 @@
 type: concept
 title: CFD模拟的结论与局限
 question: 双流体+PBM 模拟到底能信到什么程度？原书自己承认的短板是什么？
+description: 双流体加 PBM 模拟气含率与 CT 仅趋势相近、绝对值不可信，误差源于破裂聚并模型、相间力不全与标准 k-ε 抹平峰值。
 aliases: [第7章结论, CFD模拟结论, 模型局限性]
 domain: 气液搅拌釜γ-CT
 status: stable

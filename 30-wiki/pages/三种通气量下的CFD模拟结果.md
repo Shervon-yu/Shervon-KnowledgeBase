@@ -2,6 +2,7 @@
 type: concept
 title: 三种通气量下的CFD模拟结果
 question: 通气量从 9.44 增到 28.32 L/min，模拟的气含率、气泡尺寸、速度场各怎么变？
+description: 三种通气量模拟显示气量主控气含率量级、转速主控均匀性，18.88 L/min 时平均气含率约为 9.44 的两倍，CFD 均比 CT 更均匀。
 aliases: [CFD模拟结果, 气含率模拟, 气泡尺寸分布模拟, 速度场模拟]
 domain: 气液搅拌釜γ-CT
 status: stable

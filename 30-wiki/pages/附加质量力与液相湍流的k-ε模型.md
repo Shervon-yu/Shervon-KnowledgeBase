@@ -2,6 +2,7 @@
 type: concept
 title: 附加质量力与液相湍流的k-ε模型
 question: 附加质量力系数为什么取 0.5？k-ε 模型的常数取哪些值？
+description: 气泡加速的附加质量力系数取0.5且与曳力同量级不可忽略，液相湍流用标准k-ε模型并附各常数取值
 aliases: [虚拟质量力, k-ε模型常数, 液相湍动模型]
 domain: 气液搅拌釜γ-CT
 status: stable

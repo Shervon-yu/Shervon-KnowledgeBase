@@ -227,7 +227,8 @@ python -X utf8 "D:\Shervon_KnowledgeBase\90-tool\scripts\figures.py" `
 `30-wiki` 分两块，写者不同，不得越界：
 
 - **机器区**（脚本生成，人不手改）：`catalog.md`、`manifest.csv`、`todo.md`、`issues.log`、`figures-<入库夹名>.md`（以上由 `catalog.ps1`/`figure-index.py` 写）、`index.md` 与 `index-<领域>.md`（`wiki-index.ps1`）、`_lint.md`（`wiki-lint.ps1`）。
-- **人写区**（只有 LLM 写）：五个子目录 `pages` / `sources` / `comparisons` / `howto` / `openq`，外加 `glossary.md`（唯一译名表）与 `log.md`（变更日志）。人只在 Obsidian 里读，改动靠 git 审计。
+- **人写区**（只有 LLM 写）：五个子目录 `pages` / `notes` / `sources` / `comparisons` / `openq`，外加 `glossary.md`（唯一译名表）与 `log.md`（变更日志）。人只在 Obsidian 里读，改动靠 git 审计。
+- **两区两规（v3.19）**：`pages\` 是资料区——外部资料编译出的知识页，永久有效、无年龄告警；`notes\` 是经验区——会话结晶（`type: note`）与项目复盘（`type: howto`），`updated` 硬必填，超 90 天由 lint 第 11 项告警。原 `howto\` 并入 `notes\`（2026-11-25 时 0 页，无迁移）。frontmatter 机器口径见 `90-tool\schema.md`。
 - 一次提交只含一本书的 ingest，不混两本。
 - 页面级编辑契约全文见 `90-tool\AGENTS.wiki.md`；与本文件冲突时以更严的一条为准。
 - 新增子目录前必须先改 `AGENTS.wiki.md` 第 0 节，不得擅自开新层级。
@@ -244,31 +245,37 @@ python -X utf8 "D:\Shervon_KnowledgeBase\90-tool\scripts\figures.py" `
 - 主题总览页：每个工程主题 1 页，放 `pages\`，命名 `<主题>-总览`，只做导航与取舍、不写推导；该主题的知识点页链回它。
 - 非知识条目（思考题/参考文献/符号说明/索引）不建页，在该书 `sources\` 页章节地图里标注「未建页」。
 
-### 12.2 五目录职责（v3.15 起）
+### 12.2 五目录职责（v3.19 起：howto 并入 notes，新增经验区）
 
 - `pages\`：知识页——书内知识的一切落地页：机理与定义、公式/判据、参数范围、适用边界；设备结构与型式、零件；测量与实验方法；设计步骤；放大与工程实例；主题总览。`type` 用 `concept` 或 `entity`，两者同目录。
 - `sources\`：每本书 1 页章节地图，只导航、不复述知识。
 - `comparisons\`：跨书/跨标准同一量的口径差异，至少两处出处，写清差异性质。
 - `openq\`：缺口与矛盾——无来源、单来源存疑、两源冲突、OCR 待核。有来源可解的不进这里。
-- `howto\`：**项目复盘**（用户 2026-11-19 定义）。当用户用库内知识解决了一个具体工程难题之后，把那次事件提炼成一页存入库中：问题是什么、约束条件有哪些、用到库里哪些页（逐条 `[[...]]`）、怎么选/怎么算、结论与事后验证、哪些环节知识不够用。目的不是复述知识，而是留下「知识 → 用法」的证据链，让下次同类问题能直接照做。
+- `notes\`：**经验区**——两类页，都记「知识 → 用法」的证据链，不是知识的复述：
+  - `type: howto` **项目复盘**（用户 2026-11-19 定义）：用库内知识解决了一个具体工程难题之后，把那次事件提炼成一页存入库中——问题是什么、约束条件有哪些、用到库里哪些页（逐条 `[[...]]`）、怎么选/怎么算、结论与事后验证、哪些环节知识不够用。
+  - `type: note` **会话结晶**：一次会话或一个项目得出的结论与教训，正文按 digest 四字段 `question` / `findings` / `entities` / `lessons` 写（结构见 `AGENTS.wiki.md` §3）。
 
-`howto\` 页的额外约束：
+`notes\` 页的额外约束：
 
-- 命名 `howto\<任务名>.md`（例：`howto\DN800 搅拌釜轴封选型.md`），`type: howto`。
-- 必须链回所用知识页（入链 ≥2 规则同样适用），否则这次复盘就脱离知识网、下次检索不到。
-- 只写「这次是怎么用知识解决问题的」，不抄书的操作步骤；书里的东西由 `pages\` 承担，复盘只引用。
-- 由用户发起（用户说「这次怎么做的记一下」），LLM 不擅自建；LLM 在解题过程中发现「库内知识被组合使用」时可提议，经用户确认后再建。
-- 复盘里暴露的知识缺口，同步在 `openq\` 记一条并互相链接。
+- 命名 `notes\<日期>-<主题>.md`（例：`notes\2026-11-25-DN800 轴封选型.md`）；复盘页可沿用任务名。
+- 必须链回所用知识页（入链 ≥2 规则同样适用），否则这次经验就脱离知识网、下次检索不到。
+- 只写「这次是怎么用知识解决问题的」，不抄书的操作步骤；书里的东西由 `pages\` 承担，经验页只引用。
+- 由用户发起（用户说「这次怎么做的记一下」「这个记下来」），LLM 不擅自建、不自动结晶；LLM 在解题过程中发现「库内知识被组合使用」时可提议，经用户确认后再建。
+- 会话里自己推的结论，`confidence` 不超过 `medium`，正文标「本会话推导（日期）」；库内查到的按 §14 双轨写《书名》§节号 + `#L`。
+- 进 `notes\` 的门槛（至少满足一条）：带库内 `§节号 + #L` 引用；或整页标「本会话推导」且 `confidence ≤ medium`。两样都没有的不许写入。
+- 页里暴露的知识缺口，同步在 `openq\` 记一条并互相链接。
+- `updated` 硬必填，超 90 天由 lint 第 11 项告警复检；资料区 `pages\` 不设年龄告警。
 
 ## 13. 页面契约（frontmatter 与硬约束）
 
-字段顺序固定，不得增删或调序：
+字段顺序固定，不得增删或调序（机器口径：`90-tool\schema.md` §1，lint 第 0 项校验）：
 
 ```
 ---
 type: concept
 title: 搅拌功率-功率准数
 question: 搅拌功率怎么计算？
+description: 给搅拌功率的两种算法、各自适用区间，以及 Np 取值表的出处。
 aliases: [功率准数, Np]
 domain: 搅拌与混合设备
 status: draft
@@ -283,10 +290,13 @@ updated: 2026-11-16
 ---
 ```
 
-- `type` 六选一：`concept` / `entity` / `source` / `comparison` / `howto` / `openq`；除 `concept`、`entity` 同放 `pages\` 外，其余必须与所在目录一致。
+- `type` 七选一：`concept` / `entity` / `source` / `comparison` / `howto` / `openq` / `note`；除 `concept`、`entity` 同放 `pages\` 外，其余必须与所在目录一致（`howto`、`note` 落 `notes\`）。
 - `question` 必填：一个疑问句（以 `？` 或 `?` 结尾），全库唯一；空、非疑问句、重复都会被 `wiki-lint.ps1` 第 10 项判错。
+- `description` 必填范围见 `schema.md`：`notes\` 页硬必填（≤200 字，写「这页回答什么问题、给什么数」，不许复制标题）；`pages\` 页 P0 起只统计覆盖率、P1 补满。
 - `status` 四选一：`draft` / `stable` / `superseded` / `open`。
 - `confidence` 三选一：`high` / `medium` / `low`；`low` 需在正文首段说明为何低。
+- `sources` 必填（`openq` 页同样要有来源）；`updated` 除 `openq` 外必填，`openq` 用 `opened` 记日期；`notes\` 的 `updated` 超 90 天由 lint 第 11 项告警。
+- 两区规格（来源、TTL、supersedes 方向、confidence 初始）见 `90-tool\schema.md` §3。
 - 单页 ≤300 行；超了拆页，原页留「→ 已拆至 `[[新页]]`」。
 - **例外**：`index.md` 与各书知识点索引 `index-<领域>.md` 不设行数上限（由脚本生成、按 type/领域分表，行数随入库量线性增长），lint 第 4 项不检查这两类文件。
 - 每页入链 ≥2，否则合并或删除。
@@ -313,11 +323,11 @@ updated: 2026-11-16
 
 ## 15. SOP（ingest / query / lint）
 
-**ingest 十步**：0 查重（`glossary.md` + `pages\` + `question` 全库）→ 1 章节地图（`(n)` 假标题降级为粗体）→ 2 写 `sources\` 页 → 3 提炼断言簇、列 `question` 清单 → 4 建/改页（一断言簇一页）→ 5 转述图 → 6 回改受影响页（冲突开 `openq`）→ 7 更新 `index.md` → 8 追加 `log.md`（记 token 与成本）→ 9 `wiki-lint.ps1` + `git commit`。
+**ingest 十步**：0 查重（`glossary.md` + `pages\` + `notes\` + `question` 全库）→ 1 章节地图（`(n)` 假标题降级为粗体）→ 2 写 `sources\` 页 → 3 提炼断言簇、列 `question` 清单 → 4 建/改页（一断言簇一页；正文不得含 API key、密码、令牌、个人隐私，遇到即删）→ 5 转述图 → 6 回改受影响页（冲突开 `openq`）→ 7 更新 `index.md` → 8 追加 `log.md`（记 token 与成本）→ 9 `wiki-lint.ps1` + `git commit`。
 
-**query 四步**：grep `index.md` 与 `30-wiki` → 读 ≤10 候选页 → 回答带 §节号与 `#L` 行号 → 判断回填（crystallize）并登记 `index.md`。
+**query 四步**：grep `index.md` 与 `30-wiki` → 读 ≤10 候选页 → 回答带 §节号与 `#L` 行号 → 判断回填（crystallize 落 `notes\` 或 `pages\`）并登记 `index.md`。
 
-**lint 十项**：死链 / 孤儿页 / 无来源 / 超长页 / 同义重复 / 过期断言 / index 漂移 / 图无转述 / 别名遮蔽页名 / question 不合规。命令：
+**lint 十二项**：0 schema 校验（读 `90-tool\schema.md`）/ 1 死链 / 2 孤儿页 / 3 无来源 / 4 超长页 / 5 同义重复 / 6 过期断言 / 7 index 漂移 / 8 图无转述 / 9 别名遮蔽页名 / 10 question 不合规 / 11 `notes\` 年龄（`updated` 超 90 天，只告警不计错）。命令：
 
 ```
 powershell -NoProfile -ExecutionPolicy Bypass -File "D:\Shervon_KnowledgeBase\90-tool\scripts\wiki-lint.ps1"

@@ -2,6 +2,7 @@
 type: concept
 title: Rushton气液搅拌釜气穴结构及近桨区气含率分布-总览
 question: 第6章为什么把"气穴结构"与"近桨区气含率分布"放在一起研究？
+description: 第6章用 γ-CT 观测桨区气穴，通气功率降至不通气的 20%~40%，气含率峰值在叶轮处、三层分布格局不变。
 aliases: [第6章总览, 气穴结构章]
 domain: 气液搅拌釜γ-CT
 status: stable

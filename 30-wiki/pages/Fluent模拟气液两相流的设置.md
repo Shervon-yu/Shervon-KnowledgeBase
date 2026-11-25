@@ -2,6 +2,7 @@
 type: concept
 title: Fluent模拟气液两相流的设置
 question: 用 Fluent 做双流体+PBM 模拟，关键设置有哪些、为什么这样选？
+description: 列出双流体加 PBM 的 Fluent 全套设置，网格 30 万、气泡分 15 组、残差小于 10^-5，9 工况合计约 194 小时。
 aliases: [Fluent设置, CFD模拟参数, 双流体模拟设置]
 domain: 气液搅拌釜γ-CT
 status: stable

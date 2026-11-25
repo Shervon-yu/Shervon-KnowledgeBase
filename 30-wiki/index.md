@@ -1,12 +1,12 @@
-# Wiki 索引（按领域分册）
+# Wiki 索引（领域树）
 
-> 本文件由 `90-tool\scripts\wiki-index.ps1` 生成。页面数已超过单文件 120 行上限，按 domain 拆分子索引；先读本表，再进对应分册。
-> 生成时间：2026-11-23 16:26
+> 本文件由 `90-tool\scripts\wiki-index.ps1` 生成。按领域与 section 两级拆成分册（index-<领域>-<section>.md），单册超 300 行再按条数分块。
+> 生成时间：2026-11-25 08:33
 
 | 领域 | 页数 | 分册 |
 |:---|---:|:---|
-| 搅拌与混合设备 | 287 | index-搅拌与混合设备.md |
-| 化工原理 | 153 | index-化工原理.md |
-| 气液搅拌釜γ-CT | 68 | index-气液搅拌釜γ-CT.md |
-| 压力容器标准 | 62 | index-压力容器标准.md |
+| 搅拌与混合设备 | 287 | index-搅拌与混合设备-pages.md index-搅拌与混合设备-sources.md index-搅拌与混合设备-openq.md |
+| 化工原理 | 153 | index-化工原理-pages.md index-化工原理-sources.md |
+| 气液搅拌釜γ-CT | 68 | index-气液搅拌釜γ-CT-pages.md index-气液搅拌釜γ-CT-sources.md |
+| 压力容器标准 | 62 | index-压力容器标准-pages.md index-压力容器标准-sources.md |
 

@@ -2,6 +2,7 @@
 type: concept
 title: LDV与PIV流场测量
 question: 测搅拌釜内流场，LDV 和 PIV 各能给出什么、局限在哪？
+description: 对比 LDV 与 PIV 两种非接触测速，LDV 给时均定量速度但不能测非稳态流，PIV 给瞬时全场但尚不能测高速湍流。
 aliases: [LDV, PIV, 激光多普勒测速, 粒子图像测速]
 domain: 搅拌与混合设备
 status: draft

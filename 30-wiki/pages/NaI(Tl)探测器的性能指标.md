@@ -2,6 +2,7 @@
 type: concept
 title: NaI(Tl)探测器的性能指标
 question: 能量分辨率、线性度、探测效率三个指标各自卡住了什么工程取舍？
+description: 解释能量分辨率、能量线性与探测效率三指标，137Cs 峰分辨率 6%~7% 对应半高宽约 40~46 keV，决定 CT 能窗宽度下限。
 aliases: [能量分辨率, 能量线性, 探测效率, 半高宽]
 domain: 气液搅拌釜γ-CT
 status: draft

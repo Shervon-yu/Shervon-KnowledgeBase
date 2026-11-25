@@ -2,6 +2,7 @@
 type: concept
 title: V型宽V带无级变速器
 question: V 型宽 V 带无级变速器的变速范围、效率与型号 VF/VK 怎么理解？
+description: 宽 V 带无级变速器效率 0.93~0.96、最大输出功率 45 kW，恒扭矩型下 R=2 的许用扭矩约为 R=4 的两倍。
 aliases: [宽V带无级变速器, VF, VK, 表9-68, 表9-69]
 domain: 搅拌与混合设备
 status: draft

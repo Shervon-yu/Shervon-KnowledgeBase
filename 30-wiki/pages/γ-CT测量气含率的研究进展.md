@@ -2,6 +2,7 @@
 type: concept
 title: γ-CT测量气含率的研究进展
 question: 从单源单探到高分辨双能 γ-CT 的关键演进节点有哪些，国内为何长期进展缓慢？
+description: 梳理 γ-CT 从 1964 年线均测量到高分辨双能的发展脉络，国内进展缓慢源于源制作、成本与辐射安全三条硬件原因。
 aliases: [γ-CT进展, γ-CT研究历史, 双能射线, 137Cs CT]
 domain: 气液搅拌釜γ-CT
 status: draft

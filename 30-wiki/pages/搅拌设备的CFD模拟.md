@@ -2,6 +2,7 @@
 type: concept
 title: 搅拌设备的CFD模拟
 question: CFD 在搅拌设备设计中能干什么、现在还不能干什么？
+description: CFD 在搅拌设计中有黑箱、流场可视化与放大三种用法，1990 年代末气液等多相体系距工程应用还远。
 aliases: [CFD, 计算流体力学, 数值模拟]
 domain: 搅拌与混合设备
 status: draft

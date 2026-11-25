@@ -2,6 +2,7 @@
 type: concept
 title: γ-CT测量Rushton釜气含率-总览
 question: 第5章用 γ-CT 回答了什么、没回答什么？
+description: 第5章用 γ-CT 证伪临界以上均匀分散的直觉，超临界后加气量比加转速更有效，临界转速只能实测。
 aliases: [第5章总览, γ-CT测量气含率分布]
 domain: 气液搅拌釜γ-CT
 status: stable

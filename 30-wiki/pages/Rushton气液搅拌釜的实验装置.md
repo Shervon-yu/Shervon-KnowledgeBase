@@ -2,6 +2,7 @@
 type: concept
 title: Rushton气液搅拌釜的实验装置
 question: 标准 20 cm×24 cm Rushton 釜，桨径、静液高、分布器位置各自为什么定在这些数值？
+description: 给出 20 cm 标准 Rushton 釜的几何参数，桨径比 0.25、静液高与釜径相等，分布器环径 66.6 mm、开孔 1.5 mm×8 或 0.5 mm×16。
 aliases: [标准Rushton釜, 20cm Rushton釜, 圆环气体分布器, Smith桨]
 domain: 气液搅拌釜γ-CT
 status: draft

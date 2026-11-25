@@ -2,6 +2,7 @@
 type: concept
 title: γ-CT装置的组成与几何
 question: 一套实验室 γ-CT 由哪四个部分组成，源—探测器距离与准直尺寸为什么这样定？
+description: 装置由 100 mCi 137Cs 源、7 个 NaI 探测器等组成，源距 698.5 mm、准直孔径 2.5 cm，共同决定 2 mm 像素分辨率。
 aliases: [γ-CT装置, CT装置, 准直器, 铅屏蔽盒, 扫描台]
 domain: 气液搅拌釜γ-CT
 status: draft

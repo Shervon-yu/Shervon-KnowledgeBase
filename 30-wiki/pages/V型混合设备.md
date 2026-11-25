@@ -2,6 +2,7 @@
 type: concept
 title: V型混合设备
 question: V型混合器两个筒为什么不等长、夹角多少，转速与装料系数取多少，VH 系列和普通 V 型差在哪？
+description: V 型混合器两筒夹角约 80° 且不等长，转速取临界转速的 50%~80%、最佳装料系数 24%~35%，VH 系列真空进料且无积料死角。
 aliases: [V型混合器, V型混合机, VH系列]
 domain: 搅拌与混合设备
 status: draft

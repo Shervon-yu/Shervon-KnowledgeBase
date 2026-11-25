@@ -2,6 +2,7 @@
 type: concept
 title: CT重建的数学基础：坐标系与Radon变换
 question: Radon 变换为什么能"用线积分反解出截面图像"，逆变换公式里的奇异积分怎么理解？
+description: 推导 Radon 变换与逆变换，逆变换含奇异积分难以数值实现，故工程上改用 FBP 或迭代法重建。
 aliases: [Radon变换, 坐标系转换, 逆变换, 线积分]
 domain: 气液搅拌釜γ-CT
 status: draft

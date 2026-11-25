@@ -1,4 +1,4 @@
-# 给 DSH 的入库提示词 v3.3
+# 给 DSH 的入库提示词 v3.4
 
 **用法**：用 `D:\Shervon_KnowledgeBase` 开一个新会话，把书丢进 `00-inbox\`（建不建 `\<书名文件夹>\` 都行，散文件会自动建夹），然后把下面两条横线之间的内容整段贴进去。
 
@@ -25,7 +25,7 @@
 按顺序做，不许跳步：
 
 0. 先启动费用锁（见上【费用锁】），用 `job_output` 确认首屏已打印；再确认 `40-scratch\.ingest.lock` 不存在（存在=另一本正在入，停）。
-1. 完整读 `90-tool\rules.md`、`90-tool\taxonomy.md`、`90-tool\AGENTS.wiki.md`。规则以文件为准，不要凭记忆。
+1. 完整读 `90-tool\rules.md`、`90-tool\taxonomy.md`、`90-tool\AGENTS.wiki.md`。规则以文件为准，不要凭记忆。同时读 `30-wiki\_lint.md` 的告警清单与 `30-wiki\log.md` 尾 5 行，有未处理项先报。
 2. 看 `00-inbox\` 顶层：
    - 恰好 1 个文件夹 → 继续。
    - 只有散文件、没有文件夹 → 按 `rules.md` 第 2 节自动建入库夹（`书名_作者_NA_NA`），把顶层散文件全部移进去，继续。**这是默认路径，不要问我。**
@@ -56,6 +56,7 @@
     - wiki：sources 1 / pages N（其中新增 X）/ 更新 M
     - 覆盖率：sections=N covered=N uncovered=0（coverage.py exit 0）
     - 验收：ingest-build 七行全过；SELFCHECK unresolved=0；lint 0 条；图索引 N 行；commit <短 hash>
+13. 会话收尾三件事（v3.4）：① `30-wiki\log.md` 登记一行（日期、会话类型、touch、花费）；② 本次「库里没有」的问题汇总给用户；③ 列 1–3 个候选结晶页由用户挑——用户明确说「记下来」才写 `30-wiki\notes\`，不自动写。
 
 不许做：删文件（§8 三例外除外）、改原件、联网、装软件、自创分类、把资料传到任何地方、用对话轮询费用、手改 `20-md` 正文。
 **规则文件可以改**（用户已授权）：改 `rules.md` / `prompt-dsh.md` / `AGENTS.wiki.md` / `90-tool\scripts\*.ps1` 前先读现状，改完把「改了什么、为什么」写进汇报；`90-tool\VERSION` 与 `CHANGELOG.md` 同步。
