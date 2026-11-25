@@ -345,7 +345,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File "D:\Shervon_KnowledgeBase\90
 powershell -NoProfile -ExecutionPolicy Bypass -File "90-tool\scripts\ingest-build.ps1" -Book "<入库夹名>"
 ```
 
-内部六步：`md-build.py write`（按页序重建）→ `fig-names.py apply`（无图题图定名）→ `md-build.py prune`（未引用图归档）→ `check-links.ps1`（图链自检）→ `md-build.py verify`（标题体检，v3.16）→ 验收表 8 行。
+内部七步：`md-build.py write`（按页序重建）→ `fig-names.py apply`（无图题图定名）→ `md-build.py prune`（未引用图暂存到 `_acl\orphan-images`）→ `check-links.ps1`（图链自检）→ `md-build.py verify`（标题体检，v3.16）→ 验收表 8 行 → 验收全过后清空该书未引用图归档（v3.24）。
+
+产物只服务第一步 `write`（重建必须从中间产物重排）。`fig-names`、`prune`、`check-links`、`verify` 只读 md 与图夹，缺产物也能跑（v3.24 起 `_prune` 不再要求产物目录）。
 
 v3.3 起 `ingest.ps1` 收尾**自动**调用本脚本（md 尚无锚点时）；v3.23 起不再把 MinerU zip 复制进仓库（原先复制到 `40-scratch\parse\` 永久保留的做法取消，见第 3 节）。单独手跑仅用于重建（`-Force`），需自备一份新解析的产物。
 
@@ -369,7 +371,7 @@ v3.3 起 `ingest.ps1` 收尾**自动**调用本脚本（md 尚无锚点时）；
 - md 已是生成版（锚点 ≥10 且无 `图_第NN页_`）时，`ingest-build.ps1` 默认跳过重建，避免把人工定好的图名打回页码名；确需重建加 `-Force`。
 - 新书（`refs-remap.py` 的 `book_of()` 未收录）**一律不用 refs-remap**，按 §14 用「旧/新 md 逐行比对 + 逐条原文校验」手工重取行号，只改本书专用页。
 - 重建会换掉全部行号（旧书）。步骤固定：`git checkout -- '30-wiki' kb-blueprint.md` → `refs-remap.py dry`（报告落 `%TEMP%`）→ 人工核 LCS<14 的条目 → `refs-remap.py apply`。**同一批文件重复 apply 会把新行号再当旧行号映射一次**，每次重试前必须先 `git checkout`。
-- `md-build.py prune` 把 md 未引用的图片移到 `40-scratch\_acl\orphan-images\<入库夹名>\`（可回滚，不删）。
+- `md-build.py prune` 把 md 未引用的图片移到 `40-scratch\_acl\orphan-images\<入库夹名>\` 暂存；**验收（check-links + 标题体检）全过后由 `ingest-build.ps1` 自动清空该书归档**，验收未过则保留供回滚（v3.24 起：归档只是验收前的窗口，不是长期留存）。
 
 **提交守卫（v3.7）**：`git add -A` 之后、`git commit` 之前先跑 `powershell -File 90-tool\scripts\precommit-guard.ps1`；暂存区出现删除项即中止，确认是有意删除再加 `-AllowDelete`。动机：2026-11-18 一次 `git add -A` 把一整本试点书的删除（md+319 图+11 个 wiki 页）一并提交，靠 `git checkout <旧提交> -- <路径>` 才恢复。
 

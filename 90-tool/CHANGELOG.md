@@ -1,3 +1,11 @@
+## v3.24 — 2026-11-25（未引用图归档改为「验收过即清」；prune 不再依赖 MinerU 产物）
+
+- 起因：v3.23 删掉 MinerU 产物后，`40-scratch\_acl\`（419 张未引用图）也一并删除——用户判定图片都已在 20-md，其中 68 张属 HGT 20569-2013（该书无 md、无原件），用户明确会重新入库，故不再保留。
+- 规则：`rules.md` §11 改为「prune 暂存 → 验收（check-links + 标题体检）全过后自动清空该书归档；验收未过则保留供回滚」。§16 补一句：产物只服务 `md-build.py write`（重建），`fig-names`/`prune`/`check-links`/`verify` 只读 md 与图夹，缺产物也能跑。
+- 脚本：`ingest-build.ps1` 验收通过后新增归档清理段——删 `40-scratch\_acl\orphan-images\<入库夹名>\`，父目录空了再删 `orphan-images\` 与 `_acl\`。`md-build.py` 新增 `_resolve_md()`，`_prune()` 改用它——原先 `_prune()` 走 `_resolve()`，缺产物直接 `SystemExit("找不到解析产物目录")`，删掉 parse 后 prune 必然失败，属 v3.23 遗留缺陷，本次修掉。
+- 验证：`混合原理与应用` 冒烟（`-SkipCreate`）全绿——锚点 459 / 公式 904 / 表格 525 / 图链 397 = 图 397 / frontmatter True / 未定名图 0 / 标题 OK；手工造 1 张假归档后重跑，验收通过即自动删除该书目录与空的 `_acl\`；`20-md` 零改动（`git status` 干净）。
+- 已删：`40-scratch\_acl\`（419 张 / 22.2 MB）。`40-scratch` 余 `backup\` 2.7 MB、`desc\` 0.1 MB、`gen\` 0.2 MB、`legacy\` 0.6 MB、`_tmp\` 提交信息。
+
 ## v3.23 — 2026-11-25（取消 MinerU 产物永久保留：用完即删，溯源改为重跑解析）
 
 - 起因：用户判定 7 本 md 定稿、不再重排重抽图，`40-scratch\parse\` 的 3 个 zip（270 MB / 1370 文件）只剩「误删后重建」这一点价值。核实后确认 md 自带 `<!-- page: N -->` 页码锚点，行号锚点由 `md-anchor.ps1` 从 md 标题算出（不读产物），故产物不再是锚点的唯一来源。

@@ -1,8 +1,6 @@
-revert(ingest): MinerU 产物不再永久保留，用完即删
+feat(ingest): 未引用图归档改为验收过即清，prune 不再依赖 MinerU 产物
 
-- 删 40-scratch\parse\ 整目录（270 MB / 1370 文件）：7 本 md 已定稿，不再重排重抽图
-- rules.md §3/§11/§16：产物用完即删，写清删除前提（md 须承载正文/公式/表格/图题/图链 + <!-- page: N --> 页码锚点；bbox 随产物消失）；溯源改从 10-source PDF 重跑 mineru-kit parse，不耗 token
-- ingest.ps1：去掉复制 zip 到 40-scratch\parse\ 的代码块
-- md-build.py：zip 查找顺序注释加注产物不再常驻
-- .gitignore：删 parse/ 忽略行，整份重写为干净 UTF-8（修掉追加 search-index.json 时写坏的编码）
-- VERSION 3.23，CHANGELOG v3.23
+- ingest-build.ps1：验收全过后删该书 _acl\orphan-images 归档，父目录空了连带删除
+- md-build.py：新增 _resolve_md()，_prune() 改用它；原先 _prune() 走 _resolve()，缺产物直接 SystemExit，v3.23 删掉 parse 后 prune 必然失败，本次修掉
+- rules.md §11/§16 同步；VERSION 3.24；CHANGELOG v3.24
+- 验证：混合原理 -SkipCreate 冒烟全绿（锚点459/公式904/表525/图链397=图397），造假归档后重跑自动清除，20-md 零改动

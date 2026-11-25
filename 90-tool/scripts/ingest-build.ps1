@@ -7,10 +7,11 @@
 # 做的事（对应 rules.md §16）：
 #   1) md-build.py write <入库夹名>   —— 按页序重建 md：<!-- page: N --> 锚点、$$ 公式、pipe 表格、图链与图题、保留 frontmatter
 #   2) fig-names.py apply <入库夹名>   —— 无图题图定名：方形小图判二维码、其余挂同页图题
-#   3) md-build.py prune            —— 把 md 未引用的历史图移到 40-scratch\_acl\orphan-images（可回滚，不删）
+#   3) md-build.py prune            —— 把 md 未引用的历史图移到 40-scratch\_acl\orphan-images（验收前的回滚窗口）
 #   4) check-links.ps1               —— 图链自检必须 unresolved=0
 #   5) md-build.py verify            —— 标题体检：粗体假标题 / 整族标题没生成 / 漏章漏附录 / 孤立层级
 #   6) 验收打印                      —— 锚点数 / 公式数 / 表格数 / 图链数 / frontmatter / 标题体检
+#   7) 验收全过 → 清空该书未引用图归档（v3.24：归档只在验收前保留，过验即删）
 # 任何一步失败即退出非 0；不静默降级。
 
 param(
@@ -56,7 +57,7 @@ Write-Host "== 2/6 图名定名"
 & $py (Join-Path $scripts 'fig-names.py') apply $Book
 if ($LASTEXITCODE -ne 0) { throw "fig-names 失败（exit $LASTEXITCODE）" }
 
-Write-Host "== 3/6 归档未引用图片（移到 40-scratch\_acl\orphan-images）"
+Write-Host "== 3/6 暂存未引用图片（移到 40-scratch\_acl\orphan-images，验收过即清）"
 & $py (Join-Path $scripts 'md-build.py') prune $Book
 if ($LASTEXITCODE -ne 0) { throw "prune 失败（exit $LASTEXITCODE）" }
 
@@ -102,4 +103,20 @@ if ($bad.Count -gt 0) {
     exit 2
 }
 Write-Host "验收通过：锚点 $anchors / 公式 $eqs / 图链 $links / 标题 OK" -ForegroundColor Green
+
+# v3.24：验收全过后清空该书未引用图归档——归档只作验收前的回滚窗口，过验即删。
+$archDir = Join-Path $root '40-scratch\_acl\orphan-images'
+$archBook = Join-Path $archDir $Book
+if (Test-Path -LiteralPath $archBook) {
+    $archN = (Get-ChildItem -LiteralPath $archBook -File -Recurse -ErrorAction SilentlyContinue | Measure-Object).Count
+    Remove-Item -LiteralPath $archBook -Recurse -Force
+    Write-Host "== 归档清理：删除 $archN 张未引用图（$archBook）"
+}
+if ((Test-Path -LiteralPath $archDir) -and -not (Get-ChildItem -LiteralPath $archDir -Force -ErrorAction SilentlyContinue)) {
+    Remove-Item -LiteralPath $archDir -Force -ErrorAction SilentlyContinue
+    $aclRoot = Split-Path $archDir -Parent
+    if ((Test-Path -LiteralPath $aclRoot) -and -not (Get-ChildItem -LiteralPath $aclRoot -Force -ErrorAction SilentlyContinue)) {
+        Remove-Item -LiteralPath $aclRoot -Force -ErrorAction SilentlyContinue
+    }
+}
 exit 0

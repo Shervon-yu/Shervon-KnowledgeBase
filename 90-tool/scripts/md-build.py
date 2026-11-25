@@ -734,16 +734,27 @@ def _build_book(key, mode):
     build(key, mode)
 
 
+def _resolve_md(key):
+    """只解析 20-md 根下的 md 名，不需要 MinerU 产物（v3.24：产物用完即删，
+    prune / verify 这类只靠 md + 图夹的工序不得因缺产物而失败）。"""
+    key_md = os.path.join(MDROOT, key + ".md")
+    mds = [key_md] if os.path.isfile(key_md) else glob.glob(os.path.join(MDROOT, key + "*.md"))
+    if not mds:
+        raise SystemExit("20-md 根找不到 md：%s" % key)
+    return os.path.basename(mds[0])
+
+
 def _prune(key):
-    """把 md 里没有引用的图片移到 40-scratch\\_acl\\orphan-images\\<入库夹名>\\（可回滚，不删）。"""
-    b = _resolve(key)
-    md = os.path.join(MDROOT, b["name"])
+    """把 md 里没有引用的图片移到 40-scratch\\_acl\\orphan-images\\<入库夹名>\\ 暂存；
+    验收全过后 ingest-build.ps1 会清空该书归档（v3.24 起归档只作验收前的回滚窗口）。"""
+    name = _resolve_md(key)
+    md = os.path.join(MDROOT, name)
     s = io.open(md, encoding="utf-8").read()
     ref = set(re.findall(r"---图片/([^)]+?\.jpg)", s))
-    imgdir = os.path.join(MDROOT, b["name"][:-3] + "---图片")
+    imgdir = os.path.join(MDROOT, name[:-3] + "---图片")
     files = sorted(f for f in os.listdir(imgdir) if f.lower().endswith(".jpg"))
     orph = [f for f in files if f not in ref]
-    print("  [prune] md=%s refs=%d files=%d orph=%d" % (b["name"], len(ref), len(files), len(orph)))
+    print("  [prune] md=%s refs=%d files=%d orph=%d" % (name, len(ref), len(files), len(orph)))
     if not orph:
         print("未引用图片：0")
         return 0
