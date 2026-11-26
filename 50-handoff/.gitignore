@@ -1,0 +1,3 @@
+# 339 MB，超过 GitHub 单文件 100 MB 硬限制；安装包只在本机交接时使用
+installer/*.exe
+installer/*.msi
