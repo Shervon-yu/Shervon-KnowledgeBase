@@ -30,7 +30,7 @@ LLM Wiki 落地库（v3.18，2026-11-23）：原件只读 + 解析全文 + 542 �
 | 功能 | 实现 | 现状 |
 |---|---|---|
 | 入库 | `ingest.ps1`：MinerU 解析 → 图名归一 → 图链自检 → `ingest-build.ps1` 七行验收 → 重建索引 | 5 本书入库（GBT150 / 化工原理 / 搅拌与混合设备 / 气液搅拌釜γ-CT / 混合原理） |
-| Wiki 页 | 一断言簇一页（rules §12.1）；frontmatter 十一字段（rules §13）；正文 ≤300 行 | 542 页；索引 4 分册 550 条 |
+| Wiki 页 | 断言页 P-01（`rules-page.md`）；frontmatter 十一字段（rules §13）；正文 ≤300 行 | 542 页；索引 4 分册 550 条 |
 | 质检 | `check-links.ps1` 死链、`wiki-lint.ps1` 十项、`precommit-guard.ps1` 提交闸门、`md-anchor.ps1` 页码锚点 | 死链 0；lint 550 页 0 问题 |
 | 索引 | `wiki-index.ps1` 自动分册、`catalog.ps1`、`figure-index.py` / `coverage.py` | 4 分册 550 条 |
 | 成本闸门 | `budget-watch.ps1`：20 元上限，超限杀 DSH+MinerU | 会话内常驻运行 |
@@ -42,7 +42,8 @@ LLM Wiki 落地库（v3.18，2026-11-23）：原件只读 + 解析全文 + 542 �
 
 - **设计与实施方案**：`kb-blueprint.md`，2262 行（2026-11-23 复测更新 §2/§3、删除过时 §7、新增 §8.7 四方案复评）。
 - **写 wiki 的编辑契约**：`90-tool\AGENTS.wiki.md` v1.2（写者边界、页面契约、Ingest 六步、Query 四步、Lint 十项、禁止）。
-- **解析层规则**：`90-tool\rules.md` v3.18（§12 30-wiki 层、§13 页面契约、§14 引用格式、§15 SOP、§16 生成规范）。
+- **解析层规则**：`90-tool\rules.md` v3.25（§12 30-wiki 层、§13 页面契约、§14 引用格式、§15 SOP、§16 生成规范）。
+- **建页规则**：`90-tool\rules-page.md` v0.1（先筛后建、断言页 P-01、页型增补流程、溯源指针）。
 - **入库 SOP**：`90-tool\prompt-dsh.md` v3.3（十二步、20 元上限口径）。
 - **Obsidian**：本夹直接作 vault 打开；`.obsidian\app.json` 已排除 `10-source\`、`20-md\`、`40-scratch\`、`90-tool\`、`00-inbox\`；`.obsidian\` 不进版本库（`.gitignore`）。
 

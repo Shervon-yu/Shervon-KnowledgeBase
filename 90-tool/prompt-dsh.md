@@ -1,4 +1,4 @@
-# 给 DSH 的入库提示词 v3.4
+# 给 DSH 的入库提示词 v3.5
 
 **用法**：用 `D:\Shervon_KnowledgeBase` 开一个新会话，把书丢进 `00-inbox\`（建不建 `\<书名文件夹>\` 都行，散文件会自动建夹），然后把下面两条横线之间的内容整段贴进去。
 
@@ -40,12 +40,13 @@
    - 只有我明确说"先预览"时，才先跑 `-Preview`（不动文件），把书名、分类、文件数、正文路径念给我，等我说"执行"；否则不等待，直接写盘。
    - `-Preview` 也会跑一遍 MinerU，很耗时，默认跳过，避免重复解析。
 5. 用正文版权页/CIP 核对书名、版次、年份（`rules.md` §2），不符就改名：入库夹、md 文件名、`10-source` 目录、frontmatter 的 `title/edition/year/src` 四处同步，`missing` 字段改成剩余缺项（补全则空串），改完重跑 `catalog.ps1`。
-6. 入 wiki（按 `90-tool\AGENTS.wiki.md` §5 六步）：写 `30-wiki\sources\<书名>.md` 章节地图 → **先出断言簇清单**（每条一个 `question`，标 §节号与 `#L`）→ 查重 → 建/改页（**一断言簇一页，不按目录/章节分页**）→ 回改受影响的既有页（openq/comparisons/pages）→ 记 `30-wiki\log.md`。
-   - 建页判据见 `rules.md` §12.1：一断言簇一页、必须能解决具体工程问题、不预设页数、非知识条目不建页。
+6. 入 wiki（按 `90-tool\AGENTS.wiki.md` §5 六步）：写 `30-wiki\sources\<书名>.md` 章节地图 + 判定表 → **先筛**（逐段判材料/丢弃，只出材料清单与丢弃清单，不产 `question`，格式见 §5.1）→ **再建**（分型建页 + 查重 + 写 `sources.lines` 溯源指针）→ 回改受影响的既有页（openq/comparisons/pages）→ 记 `30-wiki\log.md`。
+   - 建页判据见 `90-tool\rules-page.md`：现行只有断言页 P-01（同一结论的断言合为一页），不按目录/章节分页、不预设页数、非知识条目不建页；「有用」= 可复用 / 可被追问 / 可被判错。
    - 每页守 `rules.md` §13：frontmatter 十字段顺序固定（含 `question`）、`sources` 用块状三行、单页 ≤300 行（`index.md` 与 `index-<领域>.md` 例外，不设上限）、入链 ≥2、图引用带 ≥1 句文字转述。
    - 引用一律 `《书名》§节号（#L行号）`，行号取 20-md 正文绝对行号（§14）。
-7. **覆盖率门（不通过不许往下走）**：`python 90-tool\scripts\coverage.py -Book "<入库夹名>" --strict`。
-   - 退出码非 0：按打印的 UNCOVERED 小节逐节读 md、成页，回到第 6 步；直到 `uncovered=0`。
+7. **两道覆盖率门（不通过不许往下走）**：
+   - 引用门：`python 90-tool\scripts\coverage.py -Book "<入库夹名>" --strict`；退出码非 0 按打印的 UNCOVERED 小节逐节读 md、成页，回到第 6 步，直到 `uncovered=0`。
+   - 判定门（v3.25 起新书强制）：`python 90-tool\scripts\coverage.py -Book "<入库夹名>" --judged --strict`；退出码非 0 按打印的 UNJUDGED / BAD 逐条补判定表或补页，直到全绿。
    - 判据是「每个 `###` 小节都至少被 wiki 页引用一次」的**底线**（防整节漏读）；不再要求一节一页，页数不设上限。
 8. 图索引：`python 90-tool\scripts\figure-index.py -Book "<入库夹名>"`，核对表体行数 = 20-md 内 `](图片/...)` 链接数；整页/无题图在 sources 页声明「无题非缺图」，有题无图写进 sources「已知缺陷」并指向 `40-scratch\figures-report-*.json`。
 9. `powershell -NoProfile -ExecutionPolicy Bypass -File "90-tool\scripts\wiki-index.ps1"`（页面 >120 行会自动分册）→ `wiki-lint.ps1` 十项全绿（死链/孤儿/无来源/超长/同义/过期/index 漂移/图无转述/别名遮蔽/question；超长项不查 index 文件），有问题就改到 0。
