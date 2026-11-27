@@ -1,7 +1,7 @@
 # AGENTS.wiki.md —— 本库 wiki 层的编辑契约（schema）
 
-> 版本：v1.5（2026-11-27：建页判据正文迁 `rules-page.md`，§5 加 sources 判定表，本文件只留指针）
-> 变更记录：v0 草稿 → v1.0 定稿，条款未改动，仅去掉「待定稿」标记；v1.1 目录改名 `concepts\`→`pages\`（书内知识唯一承载目录，原名已名不副实），六目录收为五目录，`entities\` 并入 `pages\`；v1.2 增表格公式约束（MinerU 管道表整列丢定界符，Obsidian 显示成源码，2026-11-19 实测 3 本书 1361 行）；v1.3 加 `description` 字段与 `note` 类型、`howto\` 并入 `notes\`、字段序补 `opened` 与 `description`，机器校验落到 `90-tool\schema.md`；v1.4 Query 四步扩六步，加会话开场与收尾两钩子；v1.5（2026-11-27）建页判据正文移至 `90-tool\rules-page.md`，§5 第 3 步加 sources 判定表（材料/丢弃/未建页），查重指针改指该文件；此后任何条款变更须人改本文件并在 git 提交信息写明理由。
+> 版本：v1.5（2026-11-27）
+> 变更记录见 `CHANGELOG.md`「AGENTS.wiki.md 版本史」节；本文件只留版本号与指针。
 > 适用对象：只对 `30-wiki\` 层生效的写入者（LLM）。`90-tool\rules.md` 管解析层（10-source / 20-md / 30-wiki），本文件管 wiki 层；两者不互相覆盖，冲突时以更严的一条为准。
 
 ## 0. 写者边界
